@@ -25,8 +25,8 @@ fun TypographyPreview() {
 val recipesAppTypography = Typography(
     displayLarge = TextStyle(
         fontFamily = montserratAlternatesFontFamily,
-        fontWeight = FontWeight.Bold,
-        fontSize = 57.sp,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 20.sp,
         lineHeight = 64.sp,
         letterSpacing = 0.sp
     ),
@@ -60,9 +60,9 @@ val recipesAppTypography = Typography(
     ),
     bodyMedium = TextStyle(
         fontFamily = montserratFontFamily,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
-        lineHeight = 20.sp,
+        lineHeight = 16.sp,
         letterSpacing = 0.25.sp
     ),
     labelLarge = TextStyle(
@@ -72,4 +72,5 @@ val recipesAppTypography = Typography(
         lineHeight = 20.sp,
         letterSpacing = 0.1.sp
     )
+
 )
