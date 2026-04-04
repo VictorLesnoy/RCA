@@ -11,6 +11,5 @@ val montserratFontFamily = FontFamily(
 )
 
 val montserratAlternatesFontFamily = FontFamily(
-    Font(R.font.montserrat_alternates_bold, FontWeight.Bold),
-    Font(R.font.montserrat_alternates_semibold, FontWeight.SemiBold)
+        Font(R.font.montserrat_alternates_semibold, FontWeight.SemiBold)
 )

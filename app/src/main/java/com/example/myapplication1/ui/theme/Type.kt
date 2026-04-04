@@ -11,7 +11,7 @@ import com.example.myapplication1.ui.theme.montserratAlternatesFontFamily
 @Preview(showBackground = true)
 @Composable
 fun TypographyPreview() {
-    RecipesAppTheme {
+    MyApplication1Theme {
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("displayLarge - Заголовки экранов", style = MaterialTheme.typography.displayLarge)
             Text("titleMedium - Карточки", style = MaterialTheme.typography.titleMedium)
@@ -27,7 +27,7 @@ val recipesAppTypography = Typography(
         fontFamily = montserratAlternatesFontFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 20.sp,
-        lineHeight = 64.sp,
+        lineHeight = 24.sp,
         letterSpacing = 0.sp
     ),
     headlineLarge = TextStyle(
@@ -50,6 +50,12 @@ val recipesAppTypography = Typography(
         fontSize = 22.sp,
         lineHeight = 28.sp,
         letterSpacing = 0.sp
+    ),
+    titleMedium = TextStyle(  // Добавлен согласно требованиям
+        fontFamily = montserratAlternatesFontFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 16.sp,
+        lineHeight = 19.sp
     ),
     bodyLarge = TextStyle(
         fontFamily = montserratFontFamily,
