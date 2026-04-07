@@ -62,7 +62,7 @@ val RecipesAppDarkColorScheme = darkColorScheme(
 )
 
 @Composable
-fun MyApplication1Theme(
+fun RecipesAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
 
     content: @Composable () -> Unit
