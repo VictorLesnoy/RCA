@@ -1,19 +1,18 @@
-package com.example.myapplication1.core.ui.theme
-
+package com.example.myapplication1.ui.theme
 
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-object Dimens {
+object `Dimens` {
 
     // === ОТСТУПЫ (PADDING / MARGIN) ===
     object Padding {
-        val ExtraSmall: Dp = 4.dp
-        val Small: Dp = 8.dp
-        val Medium: Dp = 16.dp
-        val Large: Dp = 24.dp
-        val ExtraLarge: Dp = 32.dp
-        val Huge: Dp = 48.dp
+        val PaddingSmallest: Dp = 2.dp
+        val PaddingSmall: Dp = 4.dp
+        val PaddingMedium: Dp = 8.dp
+        val PaddingMediumLarge: Dp = 12.dp
+        val PaddingMain: Dp = 16.dp
+        val PaddingLarge: Dp = 24.dp
     }
 
     // === ВЫСОТЫ ЭКРАНОВ И КОНТЕЙНЕРОВ (HEIGHTS) ===
@@ -84,4 +83,3 @@ object Dimens {
         val SpacerLarge: Dp = 16.dp
     }
 }
-
