@@ -1,30 +1,73 @@
 package com.example.myapplication1
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.myapplication1.navigation.BottomNavigation
 import com.example.myapplication1.ui.theme.RecipesAppTheme
+import com.example.myapplication1.ScreenId
 
 @Composable
-fun RecipesApp(
-    content: @Composable () -> Unit
-) {
+fun RecipesApp() {
+    var currentScreen by remember { mutableStateOf(ScreenId.RECIPES_LIST) }
+
     RecipesAppTheme {
-        Scaffold { paddingValues ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-            ) {
-                content()
+        Scaffold(
+            bottomBar = {
+                BottomNavigation(
+                    onCategoriesClick = { currentScreen = ScreenId.RECIPES_LIST },
+                    onFavoriteClick = { currentScreen = ScreenId.FAVORITES }
+                )
+            },
+            content = { paddingValues ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                ) {
+                    when (currentScreen) {
+                        ScreenId.RECIPES_LIST -> RecipesListScreen()
+                        ScreenId.FAVORITES -> FavoritesitesScreen()
+                    }
+                }
             }
-        }
+        )
+    }
+}
+
+@Composable
+fun RecipesListScreen() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "ЭКРАН КАТЕГОРИЙ",
+            fontSize = 20.sp
+        )
+    }
+}
+
+@Composable
+fun FavoritesitesScreen() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "ЭКРАН ИЗБРАННОГО",
+            fontSize = 20.sp
+        )
     }
 }
 
@@ -32,11 +75,6 @@ fun RecipesApp(
 @Composable
 fun RecipesAppPreview() {
     RecipesAppTheme {
-        RecipesApp {
-            Text(
-                text = "Предпросмотр RecipesApp",
-                modifier = Modifier.padding(16.dp)
-            )
-        }
+        RecipesApp()
     }
 }
