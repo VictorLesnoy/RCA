@@ -3,7 +3,7 @@ package com.example.myapplication1.ui.theme
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-object `Dimens` {
+object Dimens {
 
     // === ОТСТУПЫ (PADDING / MARGIN) ===
     object Padding {
