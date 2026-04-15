@@ -15,7 +15,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.myapplication1.navigation.BottomNavigation
 import com.example.myapplication1.ui.theme.RecipesAppTheme
-import com.example.myapplication1.ScreenId
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 @Composable
 fun RecipesApp() {
@@ -70,6 +71,7 @@ fun FavoritesitesScreen() {
         )
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
