@@ -13,6 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.navigationBarsPadding
 
 @Composable
 fun BottomNavigation(
@@ -22,7 +25,8 @@ fun BottomNavigation(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .navigationBarsPadding(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Button(
@@ -31,6 +35,8 @@ fun BottomNavigation(
                 containerColor = MaterialTheme.colorScheme.tertiary
             ),
             modifier = Modifier.weight(1f)
+                .clip(RoundedCornerShape(50.dp)),
+            shape = RoundedCornerShape(50.dp)
         ) {
             Text(
                 text = "Категории",
@@ -46,6 +52,8 @@ fun BottomNavigation(
                 containerColor = MaterialTheme.colorScheme.error
             ),
             modifier = Modifier.weight(1f)
+                .clip(RoundedCornerShape(50.dp)),
+            shape = RoundedCornerShape(50.dp)
         ) {
             Text(
                 text = "Избранное",

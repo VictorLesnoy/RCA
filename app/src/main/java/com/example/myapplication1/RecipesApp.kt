@@ -20,13 +20,13 @@ import androidx.compose.runtime.setValue
 
 @Composable
 fun RecipesApp() {
-    var currentScreen by remember { mutableStateOf(ScreenId.RECIPES_LIST) }
+    var currentScreen by remember { mutableStateOf(ScreenId.CATEGORIES) }
 
     RecipesAppTheme {
         Scaffold(
             bottomBar = {
                 BottomNavigation(
-                    onCategoriesClick = { currentScreen = ScreenId.RECIPES_LIST },
+                    onCategoriesClick = { currentScreen = ScreenId.CATEGORIES },
                     onFavoriteClick = { currentScreen = ScreenId.FAVORITES }
                 )
             },
@@ -37,7 +37,7 @@ fun RecipesApp() {
                         .padding(paddingValues)
                 ) {
                     when (currentScreen) {
-                        ScreenId.RECIPES_LIST -> RecipesListScreen()
+                        ScreenId.CATEGORIES -> RecipesListScreen()
                         ScreenId.FAVORITES -> FavoritesitesScreen()
                     }
                 }
