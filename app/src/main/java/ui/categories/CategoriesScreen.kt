@@ -1,4 +1,4 @@
-package ui.categories
+package com.example.myapplication1.ui.categories
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.painterResource
 import com.example.myapplication1.R
-import ui.components.ScreenHeader
+import com.example.myapplication1.ui.components.ScreenHeader
 import com.example.myapplication1.ui.theme.Dimens
 
 @Composable
@@ -46,8 +46,7 @@ fun CategoriesScreen() {
 private fun CategoryListPlaceholder() {
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .weight(1f),
+            .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(Dimens.Padding.PaddingMedium)
     ) {
         // Создаём 5 заглушек для категорий
@@ -61,7 +60,7 @@ private fun CategoryListPlaceholder() {
 private fun CategoryItemPlaceholder(position: Int) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        elevation = Dimens.Shadows.ElevationMedium
+        elevation = CardDefaults.cardElevation(defaultElevation = Dimens.Shadows.ElevationMedium)
     ) {
         Box(
             modifier = Modifier
