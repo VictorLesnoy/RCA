@@ -1,4 +1,4 @@
-package ui.components
+package com.example.myapplication1.ui.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +14,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.foundation.Image
 import androidx.compose.ui.Alignment
 import com.example.myapplication1.ui.theme.Dimens
+import androidx.compose.foundation.layout.fillMaxWidth
 
 @Composable
 fun ScreenHeader(
@@ -23,7 +24,7 @@ fun ScreenHeader(
 ) {
     Box(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .height(Dimens.HeaderHeight)
     ) {
         // Фон — изображение, заполняющее весь Box

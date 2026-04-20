@@ -82,5 +82,5 @@ object Dimens {
         val SpacerLarge: Dp = 16.dp
     }
 
-    val HeaderHeight = 200.dp
+    val HeaderHeight = 224.dp
 }
