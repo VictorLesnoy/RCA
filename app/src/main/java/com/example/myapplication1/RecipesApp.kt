@@ -14,9 +14,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.myapplication1.navigation.BottomNavigation
+import com.example.myapplication1.ui.recipes.RecipesScreen
 import com.example.myapplication1.ui.theme.RecipesAppTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+
+// Перечисление экранов приложения
+enum class ScreenId {
+    CATEGORIES,
+    FAVORITES,
+    RECIPES
+}
 
 @Composable
 fun RecipesApp() {
@@ -27,7 +35,8 @@ fun RecipesApp() {
             bottomBar = {
                 BottomNavigation(
                     onCategoriesClick = { currentScreen = ScreenId.CATEGORIES },
-                    onFavoriteClick = { currentScreen = ScreenId.FAVORITES }
+                    onFavoriteClick = { currentScreen = ScreenId.FAVORITES },
+                    onRecipesClick = { currentScreen = ScreenId.RECIPES }  // Новый обработчик
                 )
             },
             content = { paddingValues ->
@@ -39,6 +48,7 @@ fun RecipesApp() {
                     when (currentScreen) {
                         ScreenId.CATEGORIES -> RecipesListScreen()
                         ScreenId.FAVORITES -> FavoritesitesScreen()
+                        ScreenId.RECIPES -> RecipesScreen()  // Новый экран добавлен
                     }
                 }
             }
@@ -72,6 +82,18 @@ fun FavoritesitesScreen() {
     }
 }
 
+@Composable
+fun RecipesScreen() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "ЭКРАН РЕЦЕПТОВ",
+            fontSize = 20.sp
+        )
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
