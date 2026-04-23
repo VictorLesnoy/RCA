@@ -19,7 +19,7 @@ import com.example.myapplication1.ui.components.ScreenHeader
 import com.example.myapplication1.ui.theme.Dimens
 
 @Composable
-fun FavoritesScreen() {
+fun FavoritesScreen(modifier: Modifier = Modifier) {
     Column(
         modifier = Modifier
             .fillMaxSize()

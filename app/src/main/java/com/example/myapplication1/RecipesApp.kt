@@ -18,13 +18,7 @@ import com.example.myapplication1.ui.recipes.RecipesScreen
 import com.example.myapplication1.ui.theme.RecipesAppTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-
-// Перечисление экранов приложения
-enum class ScreenId {
-    CATEGORIES,
-    FAVORITES,
-    RECIPES
-}
+import com.example.myapplication1.ui.favorites.FavoritesScreen
 
 @Composable
 fun RecipesApp() {
@@ -47,7 +41,7 @@ fun RecipesApp() {
                 ) {
                     when (currentScreen) {
                         ScreenId.CATEGORIES -> RecipesListScreen()
-                        ScreenId.FAVORITES -> FavoritesitesScreen()
+                        ScreenId.FAVORITES -> FavoritesScreen()
                         ScreenId.RECIPES -> RecipesScreen()  // Новый экран добавлен
                     }
                 }
@@ -64,32 +58,6 @@ fun RecipesListScreen() {
     ) {
         Text(
             text = "ЭКРАН КАТЕГОРИЙ",
-            fontSize = 20.sp
-        )
-    }
-}
-
-@Composable
-fun FavoritesitesScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "ЭКРАН ИЗБРАННОГО",
-            fontSize = 20.sp
-        )
-    }
-}
-
-@Composable
-fun RecipesScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "ЭКРАН РЕЦЕПТОВ",
             fontSize = 20.sp
         )
     }

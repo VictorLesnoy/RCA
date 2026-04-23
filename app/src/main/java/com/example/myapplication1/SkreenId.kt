@@ -1,6 +1,7 @@
 package com.example.myapplication1
 
-/*enum class ScreenId {
+enum class ScreenId {
     CATEGORIES,
-    FAVORITES
-}*/
+    FAVORITES,
+    RECIPES
+}
