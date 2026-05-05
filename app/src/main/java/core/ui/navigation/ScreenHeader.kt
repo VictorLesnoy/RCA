@@ -18,7 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 
 @Composable
 fun ScreenHeader(
-    imagePainter: Painter,
+    imagePainter: Painter? = null,
     contentDescription: String,
     title: String
 ) {
@@ -27,13 +27,15 @@ fun ScreenHeader(
             .fillMaxWidth()
             .height(Dimens.HeaderHeight)
     ) {
-        // Фон — изображение, заполняющее весь Box
-        Image(
-            painter = imagePainter,
-            contentDescription = contentDescription,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
+        // Если imagePainter не null, отображаем изображение
+        if (imagePainter != null) {
+            Image(
+                painter = imagePainter,
+                contentDescription = contentDescription,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+        }
 
         // Surface с заголовком в нижнем левом углу
         Surface(

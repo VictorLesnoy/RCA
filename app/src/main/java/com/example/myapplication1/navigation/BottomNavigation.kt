@@ -20,7 +20,8 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 @Composable
 fun BottomNavigation(
     onCategoriesClick: () -> Unit,
-    onFavoriteClick: () -> Unit
+    onFavoriteClick: () -> Unit,
+    onRecipesClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -58,6 +59,23 @@ fun BottomNavigation(
             Text(
                 text = "Избранное",
                 color = MaterialTheme.colorScheme.onError
+            )
+        }
+
+        Spacer(modifier = Modifier.width(8.dp))  // Отступ между кнопками
+
+        Button(
+            onClick = onRecipesClick,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary
+            ),
+            modifier = Modifier.weight(1f)
+                .clip(RoundedCornerShape(50.dp)),
+            shape = RoundedCornerShape(50.dp)
+        ) {
+            Text(
+                text = "Рецепты",
+                color = MaterialTheme.colorScheme.onPrimary
             )
         }
     }

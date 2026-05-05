@@ -1,4 +1,4 @@
-package com.example.myapplication1.ui.categories
+package com.example.myapplication1.ui.favorites
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,14 +13,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.painterResource
 import com.example.myapplication1.R
 import com.example.myapplication1.ui.components.ScreenHeader
 import com.example.myapplication1.ui.theme.Dimens
 
 @Composable
-fun CategoriesScreen() {
+fun FavoritesScreen(modifier: Modifier = Modifier) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -30,33 +29,32 @@ fun CategoriesScreen() {
                 bottom = Dimens.Padding.PaddingLarge
             )
     ) {
+        // Заголовок экрана с использованием общего компонента
         ScreenHeader(
-            imagePainter = painterResource(id = R.drawable.categories_header),
-            contentDescription = "Фон экрана категорий",
-            title = "Категории"
+            imagePainter = painterResource(id = R.drawable.bcg_favorites),
+            contentDescription = "Фон экрана избранного",
+            title = "Избранное"
         )
 
-        // Заглушка для списка категорий
-        CategoryListPlaceholder()
+        // Используем список заглушек
+        FavoritesListPlaceholder()
     }
 }
 
 @Composable
-private fun CategoryListPlaceholder() {
+private fun FavoritesListPlaceholder() {
     Column(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(Dimens.Padding.PaddingMedium)
     ) {
-        // Создаём 5 заглушек для категорий
         repeat(5) { index ->
-            CategoryItemPlaceholder(position = index + 1)
+            FavoriteRecipePlaceholder(position = index + 1)
         }
     }
 }
 
 @Composable
-private fun CategoryItemPlaceholder(position: Int) {
+private fun FavoriteRecipePlaceholder(position: Int) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = Dimens.Shadows.ElevationMedium)
@@ -68,7 +66,7 @@ private fun CategoryItemPlaceholder(position: Int) {
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "Категория №$position",
+                text = "Рецепт №$position",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
