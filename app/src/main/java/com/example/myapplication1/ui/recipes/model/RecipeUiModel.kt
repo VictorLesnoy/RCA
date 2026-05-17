@@ -2,9 +2,8 @@ package com.example.myapplication1.ui.recipes.model
 
 import androidx.compose.runtime.Immutable
 import com.example.myapplication1.ASSETS_URI_PREFIX
-import data.model.IngredientDto
 import data.model.RecipeDto
-
+import com.example.myapplication1.ui.recipes.model.IngredientUiModel
 
 /**
  * Модель данных для отображения рецепта в UI.
@@ -22,7 +21,7 @@ data class RecipeUiModel(
     val id: Int,
     val title: String,
     val imageUrl: String,
-    val ingredients: List<IngredientDto>,
+    val ingredients: List<IngredientUiModel>,
     val method: List<String>,
     val isFavorite: Boolean = false
 )
@@ -47,7 +46,7 @@ fun RecipeDto.toUiModel(): RecipeUiModel {
         id = id,
         title = title,
         imageUrl = processedImageUrl,
-        ingredients = ingredients,
+        ingredients = ingredients.map { it.toUiModel() },
         method = method,
         isFavorite = false
     )
