@@ -1,77 +1,136 @@
-package com.example.myapplication1.ui.categories
+package ui.categories
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import com.example.myapplication1.R
 import com.example.myapplication1.ui.components.ScreenHeader
+import com.example.myapplication1.ui.model.CategoryUiModel
+import com.example.myapplication1.data.repository.RecipesRepositoryStub
 import com.example.myapplication1.ui.theme.Dimens
 
+/**
+ * Экран отображения категорий рецептов.
+ *
+ * @param modifier Модификатор для настройки внешнего вида (например, padding из Scaffold)
+ * @param onCategoryClick Обработчик нажатия на категорию, принимает ID категории
+ */
 @Composable
-fun CategoriesScreen() {
+fun CategoriesScreen(
+    modifier: Modifier = Modifier,
+    onCategoryClick: (Int) -> Unit
+) {
+    // Состояние для хранения списка категорий и статуса загрузки
+    val categories = remember { mutableStateOf<List<CategoryUiModel>>(emptyList()) }
+    val isLoading = remember { mutableStateOf(true) }
+    val error = remember { mutableStateOf<String?>(null) }
+
+    // Загрузка данных при создании экрана
+    LaunchedEffect(Unit) {
+        try {
+            val categoryDtos = RecipesRepositoryStub.getCategories()
+            categories.value = categoryDtos
+        } catch (e: Exception) {
+            error.value = "Ошибка загрузки категорий: ${e.message}"
+        } finally {
+            isLoading.value = false
+        }
+    }
+
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(
-                start = Dimens.Padding.PaddingMain,
-                end = Dimens.Padding.PaddingMain,
-                bottom = Dimens.Padding.PaddingLarge
-            )
+        modifier = modifier.fillMaxSize()
     ) {
+        // Заголовок экрана сверху (вне сетки)
         ScreenHeader(
             imagePainter = painterResource(id = R.drawable.categories_header),
             contentDescription = "Фон экрана категорий",
             title = "Категории"
         )
 
-        // Заглушка для списка категорий
-        CategoryListPlaceholder()
-    }
-}
-
-@Composable
-private fun CategoryListPlaceholder() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(Dimens.Padding.PaddingMedium)
-    ) {
-        // Создаём 5 заглушек для категорий
-        repeat(5) { index ->
-            CategoryItemPlaceholder(position = index + 1)
-        }
-    }
-}
-
-@Composable
-private fun CategoryItemPlaceholder(position: Int) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = Dimens.Shadows.ElevationMedium)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(Dimens.Padding.PaddingMain),
-            contentAlignment = Alignment.Center
-        ) {
+        if (isLoading.value) {
+            // Индикатор загрузки
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                CircularProgressIndicator()
+                Text(
+                    text = "Загрузка категорий...",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
+        } else if (error.value != null) {
+            // Сообщение об ошибке
             Text(
-                text = "Категория №$position",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface
+                text = error.value ?: "Неизвестная ошибка",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
             )
+        } else if (categories.value.isEmpty()) {
+            // Сообщение, если нет категорий
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "Категории не найдены",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+        } else {
+            // Сетка категорий с двумя колонками
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                verticalArrangement = Arrangement.spacedBy(Dimens.Padding.PaddingMedium),
+                horizontalArrangement = Arrangement.spacedBy(Dimens.Padding.PaddingMedium),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                contentPadding = PaddingValues(
+                    top = Dimens.Padding.PaddingSmall,
+                    bottom = Dimens.Padding.PaddingLarge
+                )
+            ) {
+                items(categories.value) { category ->
+                    CategoryItem(
+                        category = category,
+                        onClick = { onCategoryClick(category.id) },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
         }
     }
 }

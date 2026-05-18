@@ -1,15 +1,11 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.compose)
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
 }
 
 android {
     namespace = "com.example.myapplication1"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = 36  // Упрощённая форма вместо release(36)
 
     defaultConfig {
         applicationId = "com.example.myapplication1"
@@ -36,6 +32,9 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.4"  // Явно указываем версию компилятора Compose
     }
 }
 

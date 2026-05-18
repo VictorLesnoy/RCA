@@ -7,8 +7,8 @@ object Dimens {
     // === ОТСТУПЫ (PADDING / MARGIN) ===
     object Padding {
         val PaddingSmallest: Dp = 2.dp
-        val PaddingSmall: Dp = 4.dp
-        val PaddingMedium: Dp = 8.dp
+        val PaddingSmall: Dp = 8.dp
+        val PaddingMedium: Dp = 12.dp
         val PaddingMediumLarge: Dp = 12.dp
         val PaddingMain: Dp = 16.dp
         val PaddingLarge: Dp = 24.dp
