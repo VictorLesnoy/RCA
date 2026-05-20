@@ -18,6 +18,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.myapplication1.ui.model.CategoryUiModel // скорректированный путь
+import androidx.compose.material3.CardDefaults
+import com.example.myapplication1.ui.theme.Dimens.Shadows.ElevationMedium
 
 /**
  * Компонент для отображения категории в виде карточки.
@@ -29,6 +31,7 @@ import com.example.myapplication1.ui.model.CategoryUiModel // скорректи
 @Composable
 fun CategoryItem(
     category: CategoryUiModel,
+    desc: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -38,9 +41,7 @@ fun CategoryItem(
             .fillMaxWidth()
             .padding(8.dp),
         shape = MaterialTheme.shapes.medium,
-        elevation = MaterialTheme.elevation.medium,
-        // Семантическая доступность
-        role = Role.Button
+        elevation = CardDefaults.cardElevation(defaultElevation = Dimens.Shadows.ElevationMedium)
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -48,8 +49,7 @@ fun CategoryItem(
         ) {
             // Изображение с фиксированным соотношением сторон (~1.2)
             AsyncImage(
-                model = category.imageUrl ?: "",
-                contentDescription = category.title,
+                contentDescription = category.name,
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(1.2f)
@@ -61,16 +61,13 @@ fun CategoryItem(
 
             // Название категории — заглавными буквами, жирное, цвет primary
             Text(
-                text = category.title.uppercase(),
+                text = category.name.uppercase(),
                 style = MaterialTheme.typography.headlineSmall.copy(
                     fontWeight = FontWeight.Bold
                 ),
                 color = MaterialTheme.colorScheme.primary,
                 maxLines = 1
             )
-
-            // Описание — второстепенный текст, не более 3 строк
-            category.description?.let { desc ->
                 Text(
                     text = desc,
                     style = MaterialTheme.typography.bodyMedium,
@@ -80,4 +77,3 @@ fun CategoryItem(
             }
         }
     }
-}
