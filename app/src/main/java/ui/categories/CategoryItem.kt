@@ -13,14 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.myapplication1.ui.model.CategoryUiModel // скорректированный путь
 import androidx.compose.material3.CardDefaults
-import com.example.myapplication1.ui.theme.Dimens.Shadows.ElevationMedium
-
+import com.example.myapplication1.ui.theme.Dimens
 /**
  * Компонент для отображения категории в виде карточки.
  *
@@ -31,7 +29,7 @@ import com.example.myapplication1.ui.theme.Dimens.Shadows.ElevationMedium
 @Composable
 fun CategoryItem(
     category: CategoryUiModel,
-    desc: String,
+    desc: String = "",
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -49,6 +47,7 @@ fun CategoryItem(
         ) {
             // Изображение с фиксированным соотношением сторон (~1.2)
             AsyncImage(
+                model = category.imageUrl,
                 contentDescription = category.name,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -62,7 +61,7 @@ fun CategoryItem(
             // Название категории — заглавными буквами, жирное, цвет primary
             Text(
                 text = category.name.uppercase(),
-                style = MaterialTheme.typography.headlineSmall.copy(
+                style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold
                 ),
                 color = MaterialTheme.colorScheme.primary,
