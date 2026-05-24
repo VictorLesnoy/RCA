@@ -16,7 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.example.myapplication1.ui.model.CategoryUiModel // скорректированный путь
+import com.example.myapplication1.ui.categories.model.CategoryUiModel  // скорректированный путь
 import androidx.compose.material3.CardDefaults
 import com.example.myapplication1.ui.theme.Dimens
 /**
@@ -37,18 +37,19 @@ fun CategoryItem(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(Dimens.Padding.PaddingSmall),
         shape = MaterialTheme.shapes.medium,
         elevation = CardDefaults.cardElevation(defaultElevation = Dimens.Shadows.ElevationMedium)
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(Dimens.Padding.PaddingMain),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            val imageModel = if (category.imageUrl.isNotEmpty()) category.imageUrl else null
             // Изображение с фиксированным соотношением сторон (~1.2)
             AsyncImage(
-                model = category.imageUrl,
-                contentDescription = category.name,
+                model = imageModel,
+                contentDescription = category.title,
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(1.2f)
@@ -60,7 +61,7 @@ fun CategoryItem(
 
             // Название категории — заглавными буквами, жирное, цвет primary
             Text(
-                text = category.name.uppercase(),
+                text = category.title.uppercase(),
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold
                 ),
