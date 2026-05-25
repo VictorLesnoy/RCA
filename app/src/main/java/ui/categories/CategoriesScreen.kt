@@ -25,7 +25,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.myapplication1.R
 import com.example.myapplication1.ui.components.ScreenHeader
-import com.example.myapplication1.ui.model.CategoryUiModel
 import com.example.myapplication1.data.repository.RecipesRepositoryStub
 import com.example.myapplication1.ui.theme.Dimens
 
@@ -123,7 +122,8 @@ fun CategoriesScreen(
                     bottom = Dimens.Padding.PaddingLarge
                 )
             ) {
-                items(categories.value) { category ->
+                items(categories.value, key = { it.id })
+                { category ->
                     CategoryItem(
                         category = category,
                         onClick = { onCategoryClick(category.id) },

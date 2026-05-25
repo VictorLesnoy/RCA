@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,11 +15,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.example.myapplication1.ui.categories.model.CategoryUiModel  // скорректированный путь
-import androidx.compose.material3.CardDefaults
+import com.example.myapplication1.ui.categories.model.CategoryUiModel
 import com.example.myapplication1.ui.theme.Dimens
+
 /**
  * Компонент для отображения категории в виде карточки.
  *
@@ -29,7 +29,6 @@ import com.example.myapplication1.ui.theme.Dimens
 @Composable
 fun CategoryItem(
     category: CategoryUiModel,
-    desc: String = "",
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -43,10 +42,10 @@ fun CategoryItem(
     ) {
         Column(
             modifier = Modifier.padding(Dimens.Padding.PaddingMain),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(Dimens.Additional.SpacerSmall)
         ) {
             val imageModel = if (category.imageUrl.isNotEmpty()) category.imageUrl else null
-            // Изображение с фиксированным соотношением сторон (~1.2)
+
             AsyncImage(
                 model = imageModel,
                 contentDescription = category.title,
@@ -59,7 +58,6 @@ fun CategoryItem(
                 error = painterResource(id = R.drawable.error_image)
             )
 
-            // Название категории — заглавными буквами, жирное, цвет primary
             Text(
                 text = category.title.uppercase(),
                 style = MaterialTheme.typography.titleMedium.copy(
@@ -68,8 +66,10 @@ fun CategoryItem(
                 color = MaterialTheme.colorScheme.primary,
                 maxLines = 1
             )
+
+            if (category.description.isNotEmpty()) {
                 Text(
-                    text = desc,
+                    text = category.description,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 3
@@ -77,3 +77,4 @@ fun CategoryItem(
             }
         }
     }
+}

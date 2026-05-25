@@ -3,6 +3,7 @@ package data.repository
 import data.model.CategoryDto
 import data.model.IngredientDto
 import data.model.RecipeDto
+import ui.categories.model.toUiModel
 
 /**
  * Заглушка репозитория рецептов для тестирования UI без реального API.
@@ -160,7 +161,22 @@ class RecipesRepositoryStub {
     /**
      * Возвращает список всех категорий блюд.
      */
-    fun getCategories(): List<CategoryDto> = categories
+    fun getCategories(): List<CategoryUiModel> {
+        return listOf(
+            CategoryDto(
+                id = 1,
+                name = "Выпечка",
+                imageUrl = "https://example.com/cakes.jpg",
+                description = "Рецепты тортов, пирогов и печенья"
+            ),
+            CategoryDto(
+                id = 2,
+                name = "Салаты",
+                imageUrl = "https://example.com/salads.jpg",
+                description = "Лёгкие и свежие салаты"
+            )
+        ).map { it.toUiModel() }  // вызов toUiModel() для каждого DTO
+    }
 
     /**
      * Возвращает список рецептов для указанной категории.
