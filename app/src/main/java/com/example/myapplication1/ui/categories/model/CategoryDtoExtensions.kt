@@ -1,4 +1,4 @@
-package ui.categories.model
+package com.example.myapplication1.ui.categories.model
 
 import com.example.myapplication1.data.model.CategoryDto
 

@@ -1,4 +1,4 @@
-package ui.categories.model
+package com.example.myapplication1.ui.categories.model
 
 data class CategoryUiModel(
     val id: Int,
