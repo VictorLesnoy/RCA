@@ -27,6 +27,7 @@ import com.example.myapplication1.R
 import com.example.myapplication1.ui.components.ScreenHeader
 import com.example.myapplication1.data.repository.RecipesRepositoryStub
 import com.example.myapplication1.ui.theme.Dimens
+import com.example.myapplication1.ui.categories.model.CategoryUiModel
 
 /**
  * Экран отображения категорий рецептов.
