@@ -165,13 +165,13 @@ class RecipesRepositoryStub {
         return listOf(
             CategoryDto(
                 id = 1,
-                name = "Выпечка",
+                title = "Выпечка",
                 imageUrl = "https://example.com/cakes.jpg",
                 description = "Рецепты тортов, пирогов и печенья"
             ),
             CategoryDto(
                 id = 2,
-                name = "Салаты",
+                title = "Салаты",
                 imageUrl = "https://example.com/salads.jpg",
                 description = "Лёгкие и свежие салаты"
             )

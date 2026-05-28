@@ -8,6 +8,6 @@ import com.example.myapplication1.data.model.CategoryDto
 fun CategoryDto.toUiModel(): CategoryUiModel = CategoryUiModel(
     id = this.id,
     imageUrl = this.imageUrl ?: "",
-    title = this.name,  // name из DTO → title в UI‑модели
+    title = this.title,  // name из DTO → title в UI‑модели
     description = this.description ?: ""  // обработка nullable
 )
