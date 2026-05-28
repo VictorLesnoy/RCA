@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import coil.compose.AsyncImage
 import com.example.myapplication1.ui.categories.model.CategoryUiModel
 import com.example.myapplication1.ui.theme.Dimens
+import com.example.myapplication1.R
 
 /**
  * Компонент для отображения категории в виде карточки.
