@@ -4,6 +4,7 @@ import data.model.CategoryDto
 import data.model.IngredientDto
 import data.model.RecipeDto
 import com.example.myapplication1.ui.categories.model.toUiModel
+import com.example.myapplication1.ui.categories.model.CategoryUiModel
 
 /**
  * Заглушка репозитория рецептов для тестирования UI без реального API.
