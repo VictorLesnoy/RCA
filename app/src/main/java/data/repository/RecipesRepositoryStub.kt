@@ -1,10 +1,12 @@
-package data.repository
+package com.example.myapplication1.data.repository
 
-import data.model.CategoryDto
+
+//import data.model.CategoryDto
 import data.model.IngredientDto
 import data.model.RecipeDto
 import com.example.myapplication1.ui.categories.model.toUiModel
-import com.example.myapplication1.ui.categories.model.CategoryUiModel
+//import com.example.myapplication1.ui.categories.model.CategoryUiModel
+import com.example.myapplication1.data.model.CategoryDto
 
 /**
  * Заглушка репозитория рецептов для тестирования UI без реального API.
@@ -162,7 +164,7 @@ class RecipesRepositoryStub {
     /**
      * Возвращает список всех категорий блюд.
      */
-    fun getCategories(): List<CategoryUiModel> {
+    fun getCategories(): List<CategoryDto> {
         return listOf(
             CategoryDto(
                 id = 1,
