@@ -12,7 +12,7 @@ import com.example.myapplication1.data.model.CategoryDto
  * Заглушка репозитория рецептов для тестирования UI без реального API.
  * Содержит тестовые данные категорий и рецептов бургеров.
  */
-class RecipesRepositoryStub {
+object RecipesRepositoryStub {
 
     // Список категорий блюд
     private val categoryList = listOf(
@@ -164,7 +164,7 @@ class RecipesRepositoryStub {
     /**
      * Возвращает список всех категорий блюд.
      */
-    fun getCategories(): List<CategoryUiModel> = categoryList.map { it.toUiModel() }
+    fun getCategories(): List<CategoryDto> = categoryList.map { it.toUiModel() }
     /*{
         return listOf(
             CategoryDto(
