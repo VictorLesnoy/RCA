@@ -80,7 +80,7 @@ fun CategoriesScreen(
                 Text(
                     text = "Загрузка категорий...",
                     style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(top = 8.dp)
+                    modifier = Modifier.padding(top = Dimens.Padding.PaddingMedium)
                 )
             }
         } else if (error.value != null) {

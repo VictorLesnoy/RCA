@@ -164,7 +164,8 @@ class RecipesRepositoryStub {
     /**
      * Возвращает список всех категорий блюд.
      */
-    fun getCategories(): List<CategoryDto> {
+    fun getCategories(): List<CategoryUiModel> = categoryList.map { it.toUiModel() }
+    /*{
         return listOf(
             CategoryDto(
                 id = 1,
@@ -179,7 +180,7 @@ class RecipesRepositoryStub {
                 description = "Лёгкие и свежие салаты"
             )
         ).map { it.toUiModel() }  // вызов toUiModel() для каждого DTO
-    }
+    }*/
 
     /**
      * Возвращает список рецептов для указанной категории.
