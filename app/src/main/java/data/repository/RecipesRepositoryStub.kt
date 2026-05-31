@@ -164,23 +164,7 @@ object RecipesRepositoryStub {
     /**
      * Возвращает список всех категорий блюд.
      */
-    fun getCategories(): List<CategoryDto> = categoryList.map { it.toUiModel() }
-    /*{
-        return listOf(
-            CategoryDto(
-                id = 1,
-                title = "Выпечка",
-                imageUrl = "https://example.com/cakes.jpg",
-                description = "Рецепты тортов, пирогов и печенья"
-            ),
-            CategoryDto(
-                id = 2,
-                title = "Салаты",
-                imageUrl = "https://example.com/salads.jpg",
-                description = "Лёгкие и свежие салаты"
-            )
-        ).map { it.toUiModel() }  // вызов toUiModel() для каждого DTO
-    }*/
+    fun getCategories(): List<CategoryUiModel> = categoryList.map { it.toUiModel() }
 
     /**
      * Возвращает список рецептов для указанной категории.
