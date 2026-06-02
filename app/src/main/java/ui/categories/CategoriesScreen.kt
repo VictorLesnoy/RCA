@@ -28,6 +28,7 @@ import com.example.myapplication1.ui.components.ScreenHeader
 import com.example.myapplication1.data.repository.RecipesRepositoryStub
 import com.example.myapplication1.ui.theme.Dimens
 import com.example.myapplication1.ui.categories.model.CategoryUiModel
+import com.example.myapplication1.ui.categories.model.toUiModel
 
 /**
  * Экран отображения категорий рецептов.
@@ -49,7 +50,7 @@ fun CategoriesScreen(
     LaunchedEffect(Unit) {
         try {
             val categoryDtos = RecipesRepositoryStub.getCategories()
-            categories.value = categoryDtos
+            categories.value = categoryDtos.map { it.toUiModel() }
         } catch (e: Exception) {
             error.value = "Ошибка загрузки категорий: ${e.message}"
         } finally {

@@ -163,7 +163,7 @@ object RecipesRepositoryStub {
     /**
      * Возвращает список всех категорий блюд.
      */
-    fun getCategories(): List<CategoryUiModel> = categoryList.map { it.toUiModel() }
+    fun getCategories(): List<CategoryDto> = categoryList
 
     /**
      * Возвращает список рецептов для указанной категории.
