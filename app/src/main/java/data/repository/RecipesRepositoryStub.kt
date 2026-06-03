@@ -1,52 +1,55 @@
-package data.repository
+package com.example.myapplication1.data.repository
 
-import data.model.CategoryDto
+
 import data.model.IngredientDto
 import data.model.RecipeDto
+import com.example.myapplication1.ui.categories.model.toUiModel
+import com.example.myapplication1.ui.categories.model.CategoryUiModel
+import com.example.myapplication1.data.model.CategoryDto
 
 /**
  * Заглушка репозитория рецептов для тестирования UI без реального API.
  * Содержит тестовые данные категорий и рецептов бургеров.
  */
-class RecipesRepositoryStub {
+object RecipesRepositoryStub {
 
     // Список категорий блюд
-    private val categories = listOf(
+    private val categoryList = listOf(
         CategoryDto(
-            id = 0,
-            title = "Бургеры",
-            description = "Рецепты всех популярных видов бургеров",
-            imageUrl = "burger.png"
+            0,
+            "Бургеры",
+            "Рецепты всех популярных видов бургеров",
+            "burger.png"
         ),
         CategoryDto(
-            id = 1,
-            title = "Десерты",
-            description = "Самые вкусные рецепты десертов специально для вас",
-            imageUrl = "dessert.png"
+            1,
+            "Десерты",
+            "Самые вкусные рецепты десертов специально для вас",
+            "dessert.png"
         ),
         CategoryDto(
-            id = 2,
-            title = "Пицца",
-            description = "Пицца на любой вкус и цвет. Лучшая подборка для тебя",
-            imageUrl = "pizza.png"
+            2,
+            "Пицца",
+            "Пицца на любой вкус и цвет. Лучшая подборка для тебя",
+            "pizza.png"
         ),
         CategoryDto(
-            id = 3,
-            title = "Рыба",
-            description = "Печеная, жареная, сушеная, любая рыба на твой вкус",
-            imageUrl = "fish.png"
+            3,
+            "Рыба",
+            "Печеная, жареная, сушеная, любая рыба на твой вкус",
+            "fish.png"
         ),
         CategoryDto(
-            id = 4,
-            title = "Супы",
-            description = "От классики до экзотики: мир в одной тарелке",
-            imageUrl = "soup.png"
+            4,
+            "Супы",
+            "От классики до экзотики: мир в одной тарелке",
+            "soup.png"
         ),
         CategoryDto(
-            id = 5,
-            title = "Салаты",
-            description = "Хрустящий калейдоскоп под соусом вдохновения",
-            imageUrl = "salad.png"
+            5,
+            "Салаты",
+            "Хрустящий калейдоскоп под соусом вдохновения",
+            "salad.png"
         )
     )
 
@@ -160,7 +163,7 @@ class RecipesRepositoryStub {
     /**
      * Возвращает список всех категорий блюд.
      */
-    fun getCategories(): List<CategoryDto> = categories
+    fun getCategories(): List<CategoryDto> = categoryList
 
     /**
      * Возвращает список рецептов для указанной категории.
