@@ -55,7 +55,7 @@ fun RecipesApp() {
                         ScreenId.FAVORITES -> FavoritesScreen()
                         ScreenId.RECIPES -> RecipesScreen(
                             categoryId = selectedCategoryId ?: 0,
-                            categoryTitle = selectedCategoryTitle,
+                            //categoryTitle = selectedCategoryTitle,
                             onRecipeClick = { recipeId ->
                             }
                         )

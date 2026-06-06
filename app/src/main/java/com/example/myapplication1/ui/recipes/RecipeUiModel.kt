@@ -1,9 +1,8 @@
-package com.example.myapplication1.ui.recipes.model
+package com.example.myapplication1.ui.recipes
 
 import androidx.compose.runtime.Immutable
 import com.example.myapplication1.ASSETS_URI_PREFIX
 import data.model.RecipeDto
-import com.example.myapplication1.ui.recipes.model.IngredientUiModel
 
 /**
  * Модель данных для отображения рецепта в UI.

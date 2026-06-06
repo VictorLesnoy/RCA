@@ -1,6 +1,6 @@
-package ui.recipes
+package com.example.myapplication1.ui.recipes
 
-/*import androidx.compose.foundation.clickable
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
@@ -31,15 +31,8 @@ fun RecipeItem(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(Dimens.Heights.ListItem),
-                placeholder = androidx.coil.compose.placeholder {
-                    androidx.compose.material3.CircularProgressIndicator()
-                },
-                error = androidx.coil.compose.error {
-                    Text(
-                        text = "Не удалось загрузить изображение",
-                        color = androidx.compose.ui.graphics.Color.Gray
-                    )
-                }
+                placeholder = { CircularProgressIndicator() },
+                error = { Text("Не удалось загрузить изображение", color = Color.Gray) }
             )
 
             Spacer(modifier = Modifier.height(Dimens.Padding.PaddingSmall))
@@ -47,4 +40,4 @@ fun RecipeItem(
             Text(text = recipe.title)
         }
     }
-}*/
+}

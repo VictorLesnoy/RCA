@@ -12,7 +12,6 @@ import androidx.compose.ui.unit.dp
 import com.example.myapplication1.data.repository.RecipesRepositoryStub
 import com.example.myapplication1.ui.components.ScreenHeader
 import com.example.myapplication1.ui.theme.Dimens
-import com.example.myapplication1.ui.recipes.model.RecipeUiModel
 
 @Composable
 fun RecipesScreen(
@@ -66,7 +65,7 @@ fun RecipesScreen(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(recipes) { recipe ->
+                items(recipes, key = { it.id }) { recipe ->
                     RecipeItem(
                         recipe = recipe,
                         onRecipeClick = onRecipeClick
