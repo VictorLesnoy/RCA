@@ -3,6 +3,7 @@ package com.example.myapplication1.ui.recipes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -24,15 +25,17 @@ fun RecipeItem(
             .clickable { onRecipeClick(recipe.id) }
     ) {
         Column(modifier = Modifier.padding(Dimens.Padding.PaddingMedium)) {
-            AsyncImage(
+            SubcomposeAsyncImage(
                 model = recipe.imageUrl,
                 contentDescription = "Изображение рецепта ${recipe.title}",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(Dimens.Heights.ListItem),
-                placeholder = { CircularProgressIndicator() },
-                error = { Text("Не удалось загрузить изображение", color = Color.Gray) }
+                loading = {
+                    CircularProgressIndicator()
+                },
+                error = { Text(text = "Не удалось загрузить изображение", color = Color.Gray) }
             )
 
             Spacer(modifier = Modifier.height(Dimens.Padding.PaddingSmall))
