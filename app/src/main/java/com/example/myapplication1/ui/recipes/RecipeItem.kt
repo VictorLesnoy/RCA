@@ -9,7 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
+import androidx.compose.ui.graphics.Color
+import coil.compose.SubcomposeAsyncImage
 import com.example.myapplication1.ui.theme.Dimens
 
 @Composable
