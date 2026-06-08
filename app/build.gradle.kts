@@ -1,10 +1,10 @@
 plugins {
-    //id("com.android.application")
-    //id("org.jetbrains.kotlin.android")
-    //kotlin("plugin.compose") version "1.9.23" // <-- обязательно
-    id("androidx.compose.compiler")
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    kotlin("plugin.compose") version "1.9.23" // <-- обязательно
+    //id("androidx.compose.compiler")
+    //alias(libs.plugins.android.application)
+    //alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -55,10 +55,10 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.coil.compose)
     /*androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-    implementation(libs.coil.compose)
     implementation("androidx.navigation:navigation-compose:2.7.5")*/
 }
