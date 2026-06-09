@@ -14,9 +14,10 @@ import com.example.myapplication1.RecipesApp
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
-            RecipesApp ()
+            MyApplication1Theme {
+                AppNavHost()
+            }
         }
     }
 }
