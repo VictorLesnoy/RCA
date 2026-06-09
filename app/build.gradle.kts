@@ -57,6 +57,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.coil.compose)
     implementation("androidx.navigation:navigation-compose:2.7.6")
+
     /*androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
