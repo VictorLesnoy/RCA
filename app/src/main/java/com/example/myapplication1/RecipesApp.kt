@@ -1,4 +1,4 @@
-package com.example.myapplication1
+/*package com.example.myapplication1
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -92,4 +92,4 @@ fun RecipesAppPreview() {
     RecipesAppTheme {
         RecipesApp()
     }
-}
+}*/
