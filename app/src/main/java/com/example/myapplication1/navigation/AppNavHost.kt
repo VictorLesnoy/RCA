@@ -22,11 +22,12 @@ fun AppNavHost() {
                 onCategoryClick = { categoryId ->
                     navController.navigate(Destination.Recipes.createRoute(categoryId))
                 }
+            )
         }
 
         // Экран рецептов с параметром categoryId
         composable(
-            route = "${Destination.Recipes.route}/{${Destination.Recipes.CATEGORY_ID_ARG}}",
+            route = Destination.Recipes.route,
             arguments = listOf(
                 androidx.navigation.navArgument(Destination.Recipes.CATEGORY_ID_ARG) {
                     type = androidx.navigation.NavType.IntType
@@ -42,5 +43,6 @@ fun AppNavHost() {
                 onBackClick = {
                     navController.popBackStack()
                 }
+            )
         }
     }
