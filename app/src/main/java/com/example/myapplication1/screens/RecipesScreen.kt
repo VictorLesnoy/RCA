@@ -12,7 +12,8 @@ import androidx.compose.ui.Modifier
 @Composable
 fun RecipesScreen(
     categoryId: Int,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onRecipeClick: (Int, RecipeUiModel) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -23,6 +24,14 @@ fun RecipesScreen(
 
         Button(onClick = onBackClick) {
             Text("Назад к категориям")
+        }
+    }
+    LazyColumn {
+        items(recipes) { recipe ->
+            RecipeItem(
+                recipe = recipe,
+                onRecipeClick = { onRecipeClick(recipe.id, recipe) }
+            )
         }
     }
 }

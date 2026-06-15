@@ -21,7 +21,7 @@ import com.example.myapplication1.ui.theme.Dimens
 @Composable
 fun RecipesScreen(
     categoryId: Int,
-    onRecipeClick: (Int) -> Unit,
+    onRecipeClick: (Int, RecipeUiModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var recipes by remember { mutableStateOf<List<RecipeUiModel>>(emptyList()) }
@@ -68,12 +68,12 @@ fun RecipesScreen(
         } else {
             LazyColumn(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(Dimens.Padding.PaddingSmall)
             ) {
                 items(recipes, key = { it.id }) { recipe ->
                     RecipeItem(
                         recipe = recipe,
-                        onRecipeClick = onRecipeClick
+                        onRecipeClick = { onRecipeClick(recipe.id, recipe) }
                     )
                 }
             }

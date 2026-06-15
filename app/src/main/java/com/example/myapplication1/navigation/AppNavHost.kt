@@ -7,6 +7,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavBackStackEntry
 import com.example.myapplication1.screens.CategoriesScreen
 import com.example.myapplication1.screens.RecipesScreen
+import com.example.myapplication1.ui.theme.Destination
+import com.example.myapplication1.KEY_RECIPE_OBJECT
 
 @Composable
 fun AppNavHost() {
@@ -42,7 +44,19 @@ fun AppNavHost() {
                 categoryId = categoryId,
                 onBackClick = {
                     navController.popBackStack()
+                },
+                onRecipeClick = { recipeId, recipeModel ->
+                    // Сохраняем объект рецепта в savedStateHandle текущего экрана
+                    navController.currentBackStackEntry?.savedStateHandle?.set(
+                        key = KEY_RECIPE_OBJECT,
+                        value = recipeModel
+                    )
+                    // Навигация на экран деталей с ID рецепта
+                    navController.navigate(
+                        Destination.RecipeDetail.createRoute(recipeId)
+                    )
                 }
             )
         }
     }
+}
