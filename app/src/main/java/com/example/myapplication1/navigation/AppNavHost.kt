@@ -4,11 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.myapplication1.screens.HomeScreen
-import com.example.myapplication1.screens.ProfileScreen
-import com.example.myapplication1.screens.SettingsScreen
-import com.example.myapplication1.screens.UserDetailScreen
-import com.example.myapplication1.screens.ProductScreen
+import androidx.navigation.NavBackStackEntry
+import com.example.myapplication1.screens.CategoriesScreen
+import com.example.myapplication1.screens.RecipesScreen
 
 @Composable
 fun AppNavHost() {
@@ -16,42 +14,35 @@ fun AppNavHost() {
 
     NavHost(
         navController = navController,
-        startDestination = Destinations.Home.route
+        startDestination = Destination.Categories.route
     ) {
-        composable(Destinations.Home.route) {
-            HomeScreen(navController)
-        }
-
-        composable(Destinations.Profile.route) {
-            ProfileScreen(navController)
-        }
-
-        composable(Destinations.Settings.route) {
-            SettingsScreen()
-        }
-
-        composable(
-            route = "${Destinations.UserDetail.route}/{${Destinations.UserDetail.USER_ID_ARG}}",
-            arguments = listOf(
-                androidx.navigation.navArgument(Destinations.UserDetail.USER_ID_ARG) {
-                    type = androidx.navigation.NavType.StringType
+        // Экран категорий
+        composable(Destination.Categories.route) { backStackEntry ->
+            CategoriesScreen(
+                onCategoryClick = { categoryId ->
+                    navController.navigate(Destination.Recipes.createRoute(categoryId))
                 }
             )
-        ) { backStackEntry ->
-            val userId = backStackEntry.arguments?.getString(Destinations.UserDetail.USER_ID_ARG) ?: "Unknown"
-            UserDetailScreen(userId, navController)
         }
 
+        // Экран рецептов с параметром categoryId
         composable(
-            route = "${Destinations.Product.route}/{${Destinations.Product.PRODUCT_ID_ARG}}",
+            route = Destination.Recipes.route,
             arguments = listOf(
-                androidx.navigation.navArgument(Destinations.Product.PRODUCT_ID_ARG) {
-                    type = androidx.navigation.NavType.StringType
+                androidx.navigation.navArgument(Destination.Recipes.CATEGORY_ID_ARG) {
+                    type = androidx.navigation.NavType.IntType
                 }
             )
-        ) { backStackEntry ->
-            val productId = backStackEntry.arguments?.getString(Destinations.Product.PRODUCT_ID_ARG) ?: "Unknown"
-            ProductScreen(productId, navController)
+        ) { backStackEntry: NavBackStackEntry ->
+            val categoryId = backStackEntry.arguments?.getInt(
+                Destination.Recipes.CATEGORY_ID_ARG
+            ) ?: 0
+
+            RecipesScreen(
+                categoryId = categoryId,
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
         }
     }
-}

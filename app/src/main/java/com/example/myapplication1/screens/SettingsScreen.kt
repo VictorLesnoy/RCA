@@ -1,4 +1,4 @@
-package com.example.myapplication1.screens
+/*package com.example.myapplication1.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,4 +18,4 @@ fun SettingsScreen() {
     ) {
         Text("Экран настроек приложения")
     }
-}
+}*/
