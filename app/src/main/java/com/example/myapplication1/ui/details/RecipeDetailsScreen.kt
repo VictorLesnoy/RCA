@@ -8,15 +8,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.myapplication1.model.RecipeUiModel
+import com.example.myapplication1.ui.recipes.RecipeUiModel
 import com.example.myapplication1.ui.theme.Dimens
 import com.example.myapplication1.KEY_RECIPE_OBJECT
 import com.example.myapplication1.data.repository.RecipesRepositoryStub
 
 @Composable
 fun RecipeDetailsScreen(
-    recipeId: Int,
-    navController: NavController
+    recipe: RecipeUiModel
 ) {
     // Получаем сохранённый объект рецепта из предыдущего экрана
     val savedRecipe: RecipeUiModel? = navController.previousBackStackEntry

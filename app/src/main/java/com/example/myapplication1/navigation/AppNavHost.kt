@@ -6,8 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavBackStackEntry
 import com.example.myapplication1.screens.CategoriesScreen
-import com.example.myapplication1.screens.RecipesScreen
-import com.example.myapplication1.ui.theme.Destination
+import com.example.myapplication1.ui.recipes.RecipesScreen
 import com.example.myapplication1.KEY_RECIPE_OBJECT
 
 @Composable

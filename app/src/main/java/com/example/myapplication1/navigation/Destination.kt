@@ -14,7 +14,6 @@ sealed class Destination(val route: String) {
     data class RecipeDetail(val recipeId: Int) : Destination("recipe/{recipeId}") {
         companion object {
             const val RECIPE_ID_ARG = "recipeId"
-            const val KEY_RECIPE_OBJECT = "recipe_object"
 
             fun createRoute(recipeId: Int) = "recipe/$recipeId"
         }

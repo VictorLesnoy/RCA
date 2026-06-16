@@ -5,7 +5,6 @@ import com.example.myapplication1.ASSETS_URI_PREFIX
 import data.model.RecipeDto
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
-import kotlinx.serialization.Serializable
 
 /**
  * Модель данных для отображения рецепта в UI.

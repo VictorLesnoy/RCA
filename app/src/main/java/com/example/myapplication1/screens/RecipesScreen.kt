@@ -26,12 +26,12 @@ fun RecipesScreen(
             Text("Назад к категориям")
         }
     }
-    LazyColumn {
+    /*LazyColumn {
         items(recipes) { recipe ->
             RecipeItem(
                 recipe = recipe,
                 onRecipeClick = { onRecipeClick(recipe.id, recipe) }
             )
         }
-    }
+    }*/
 }
