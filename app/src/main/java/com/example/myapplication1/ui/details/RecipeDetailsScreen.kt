@@ -6,8 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.example.myapplication1.model.RecipeUiModel
+import com.example.myapplication1.ui.recipes.RecipeUiModel
 import com.example.myapplication1.ui.theme.Dimens
 
 @Composable
@@ -37,11 +36,6 @@ fun RecipeDetailsScreen(
             modifier = Modifier.padding(bottom = Dimens.Padding.PaddingSmall)
         )
 
-        // Время приготовления
-        Text(
-            text = "Время приготовления: ${recipe.cookingTime} мин.",
-            modifier = Modifier.padding(bottom = Dimens.Padding.PaddingSmall)
-        )
 
         // Статус «Избранное»
         Text(

@@ -77,7 +77,7 @@ fun AppNavHost() {
         // Получаем сохранённый объект рецепта из предыдущего экрана
         val savedRecipe: RecipeUiModel? = navController.previousBackStackEntry
             ?.savedStateHandle
-            ?.get<RecipeUiModel>(Destination.RecipeDetail.KEY_RECIPE_OBJECT)
+            ?.get<RecipeUiModel>(KEY_RECIPE_OBJECT)
 
         // Используем либо сохранённый объект, либо загружаем по ID
         val recipeToDisplay = savedRecipe ?: loadRecipeById(recipeId)
