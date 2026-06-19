@@ -59,30 +59,29 @@ fun AppNavHost() {
                 }
             )
         }
-    }
 
-    // Экран деталей рецепта
-    composable(
-        route = Destination.RecipeDetail.route,
-        arguments = listOf(
-            androidx.navigation.navArgument(Destination.RecipeDetail.RECIPE_ID_ARG) {
-                type = androidx.navigation.NavType.IntType
-            }
-        )
-    ) { backStackEntry: NavBackStackEntry ->
-        val recipeId = backStackEntry.arguments?.getInt(
-            Destination.RecipeDetail.RECIPE_ID_ARG
-        ) ?: 0
+        composable(
+            route = Destination.RecipeDetail.route,
+            arguments = listOf(
+                androidx.navigation.navArgument(Destination.RecipeDetail.RECIPE_ID_ARG) {
+                    type = androidx.navigation.NavType.IntType
+                }
+            )
+        ) { backStackEntry: NavBackStackEntry ->
+            val recipeId = backStackEntry.arguments?.getInt(
+                Destination.RecipeDetail.RECIPE_ID_ARG
+            ) ?: 0
 
-        // Получаем сохранённый объект рецепта из предыдущего экрана
-        val savedRecipe: RecipeUiModel? = navController.previousBackStackEntry
-            ?.savedStateHandle
-            ?.get<RecipeUiModel>(KEY_RECIPE_OBJECT)
+            // Получаем сохранённый объект рецепта из предыдущего экрана
+            val savedRecipe: RecipeUiModel? = navController.previousBackStackEntry
+                ?.savedStateHandle
+                ?.get<RecipeUiModel>(KEY_RECIPE_OBJECT)
 
-        // Используем либо сохранённый объект, либо загружаем по ID
-        val recipeToDisplay = savedRecipe ?: loadRecipeById(recipeId)
+            // Используем либо сохранённый объект, либо загружаем по ID
+            val recipeToDisplay = savedRecipe ?: loadRecipeById(recipeId)
 
-        RecipeDetailsScreen(recipe = recipeToDisplay)
+            RecipeDetailsScreen(recipe = recipeToDisplay)
+        }
     }
 }
 
