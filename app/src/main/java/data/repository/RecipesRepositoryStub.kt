@@ -1,6 +1,5 @@
 package com.example.myapplication1.data.repository
 
-
 import data.model.IngredientDto
 import data.model.RecipeDto
 import com.example.myapplication1.data.model.CategoryDto
@@ -158,6 +157,10 @@ object RecipesRepositoryStub {
         )
     )
 
+    // Все рецепты из всех категорий (для поиска по ID)
+    private val allRecipes: List<RecipeDto>
+        get() = burgerRecipes // В будущем можно добавить рецепты из других категорий
+
     /**
      * Возвращает список всех категорий блюд.
      */
@@ -173,5 +176,16 @@ object RecipesRepositoryStub {
     fun getRecipesByCategoryId(categoryId: Int): List<RecipeDto> = when (categoryId) {
         0 -> burgerRecipes  // Имитация GET /category/0/recipes — рецепты бургеров
         else -> emptyList() // Остальные категории пока пустые
+    }
+
+    /**
+     * Возвращает рецепт по его ID.
+     *
+     * @param id ID рецепта
+     * @return RecipeDto с указанным ID или выбрасывает исключение, если рецепт не найден
+     */
+    fun getRecipeById(id: Int): RecipeDto {
+        return allRecipes.find { it.id == id }
+            ?: throw IllegalArgumentException("Recipe with ID $id not found")
     }
 }
