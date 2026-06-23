@@ -3,6 +3,8 @@ package com.example.myapplication1.ui.recipes
 import androidx.compose.runtime.Immutable
 import com.example.myapplication1.ASSETS_URI_PREFIX
 import data.model.RecipeDto
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
 /**
  * Модель данных для отображения рецепта в UI.
@@ -16,6 +18,7 @@ import data.model.RecipeDto
  * @param isFavorite Флаг «Избранное» (изначально false)
  */
 @Immutable
+@Parcelize
 data class RecipeUiModel(
     val id: Int,
     val title: String,
@@ -23,7 +26,7 @@ data class RecipeUiModel(
     val ingredients: List<IngredientUiModel>,
     val method: List<String>,
     val isFavorite: Boolean = false
-)
+) : Parcelable
 
 /**
  * Функция‑расширение для преобразования RecipeDto в RecipeUiModel.

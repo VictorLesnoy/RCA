@@ -1,7 +1,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    kotlin("plugin.compose") version "1.9.23" // <-- обязательно
+    //kotlin("plugin.compose") version "1.9.23" // <-- обязательно
+    id("kotlin-parcelize")
     //id("androidx.compose.compiler")
     //alias(libs.plugins.android.application)
     //alias(libs.plugins.kotlin.android)

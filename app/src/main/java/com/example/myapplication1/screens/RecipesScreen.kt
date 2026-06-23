@@ -8,11 +8,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.example.myapplication1.ui.recipes.RecipeUiModel
 
 @Composable
 fun RecipesScreen(
     categoryId: Int,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onRecipeClick: (Int, RecipeUiModel) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -25,4 +27,12 @@ fun RecipesScreen(
             Text("Назад к категориям")
         }
     }
+    /*LazyColumn {
+        items(recipes) { recipe ->
+            RecipeItem(
+                recipe = recipe,
+                onRecipeClick = { onRecipeClick(recipe.id, recipe) }
+            )
+        }
+    }*/
 }
