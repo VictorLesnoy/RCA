@@ -8,8 +8,11 @@ import androidx.navigation.NavBackStackEntry
 import com.example.myapplication1.screens.CategoriesScreen
 import com.example.myapplication1.ui.recipes.RecipesScreen
 import com.example.myapplication1.ui.recipes.RecipeUiModel
+import com.example.myapplication1.ui.details.RecipeDetailsScreen
 import com.example.myapplication1.KEY_RECIPE_OBJECT
 import com.example.myapplication1.data.repository.RecipesRepositoryStub
+import androidx.navigation.navArgument
+import androidx.navigation.NavType
 
 @Composable
 fun AppNavHost() {
@@ -32,8 +35,8 @@ fun AppNavHost() {
         composable(
             route = Destination.Recipes.route,
             arguments = listOf(
-                androidx.navigation.navArgument(Destination.Recipes.CATEGORY_ID_ARG) {
-                    type = androidx.navigation.NavType.IntType
+                navArgument(Destination.Recipes.CATEGORY_ID_ARG) {
+                    type = NavType.IntType
                 }
             )
         ) { backStackEntry: NavBackStackEntry ->
@@ -60,11 +63,12 @@ fun AppNavHost() {
             )
         }
 
+        // Экран деталей рецепта
         composable(
             route = Destination.RecipeDetail.route,
             arguments = listOf(
-                androidx.navigation.navArgument(Destination.RecipeDetail.RECIPE_ID_ARG) {
-                    type = androidx.navigation.NavType.IntType
+                navArgument(Destination.RecipeDetail.RECIPE_ID_ARG) {
+                    type = NavType.IntType
                 }
             )
         ) { backStackEntry: NavBackStackEntry ->
@@ -77,15 +81,32 @@ fun AppNavHost() {
                 ?.savedStateHandle
                 ?.get<RecipeUiModel>(KEY_RECIPE_OBJECT)
 
-            // Используем либо сохранённый объект, либо загружаем по ID
-            val recipeToDisplay = savedRecipe ?: loadRecipeById(recipeId)
+            // Пытаемся получить рецепт: сначала из кэша, потом из репозитория
+            val recipeToDisplay = try {
+                savedRecipe ?: RecipesRepositoryStub.getRecipeById(recipeId).toUiModel()
+            } catch (e: IllegalArgumentException) {
+                // Обработка случая, когда рецепт не найден
+                null
+            }
 
-            RecipeDetailsScreen(recipe = recipeToDisplay)
+            if (recipeToDisplay != null) {
+                RecipeDetailsScreen(recipe = recipeToDisplay)
+            } else {
+                // Экран ошибки, если рецепт не найден
+                androidx.compose.foundation.layout.Column(
+                    modifier = androidx.compose.ui.Modifier.fillMaxSize(),
+                    verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
+                    horizontalAlignment = androidx.compose.foundation.layout.Alignment.CenterHorizontally
+                ) {
+                    androidx.compose.material3.Text(
+                        text = "Рецепт с ID $recipeId не найден",
+                        color = androidx.compose.ui.graphics.Color.Red
+                    )
+                    androidx.compose.material3.Button(onClick = { navController.popBackStack() }) {
+                        androidx.compose.material3.Text("Назад")
+                    }
+                }
+            }
         }
     }
-}
-
-// Вспомогательная функция загрузки рецепта по ID
-private fun loadRecipeById(recipeId: Int): RecipeUiModel {
-    return RecipesRepositoryStub.getRecipeById(recipeId).toUiModel()
 }
