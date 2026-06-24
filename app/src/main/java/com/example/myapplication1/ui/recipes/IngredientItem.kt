@@ -35,10 +35,4 @@ fun IngredientItem(
             modifier = Modifier.weight(1f)
         )
     }
-
-    // Горизонтальный разделитель после каждого элемента (кроме последнего — обработаем в списке)
-    Divider(
-        modifier = Modifier.padding(start = 16.dp, end = 16.dp)
-    )
 }
-

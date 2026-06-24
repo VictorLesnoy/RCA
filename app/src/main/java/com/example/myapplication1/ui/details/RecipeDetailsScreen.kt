@@ -5,11 +5,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -60,16 +62,9 @@ fun RecipeDetailsScreen(recipe: RecipeUiModel) {
             fontSize = 18.sp
         )
 
-        Text(
-            text = "Приготовление (${recipe.method.size} шагов)",
-            modifier = Modifier.padding(top = Dimens.Padding.PaddingLarge, start = Dimens.Padding.PaddingMain),
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp
-        )
-
-        recipe.method.forEachIndexed { index, step ->
+        recipe.method.forEach { step ->
             Text(
-                text = "${index + 1}. $step",
+                text = step,
                 modifier = Modifier
                     .padding(start = Dimens.Padding.PaddingMain, top = 8.dp, end = Dimens.Padding.PaddingMain)
             )
@@ -88,7 +83,7 @@ private fun ScreenHeader(title: String, imageUrl: String) {
             model = imageUrl,
             contentDescription = "Header image for $title",
             modifier = Modifier.fillMaxSize(),
-            contentScale = androidx.compose.foundation.layout.ContentScale.Crop
+            contentScale = androidx.compose.ui.layout.ContentScale.Crop
         )
         Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.5f)))
         Text(
