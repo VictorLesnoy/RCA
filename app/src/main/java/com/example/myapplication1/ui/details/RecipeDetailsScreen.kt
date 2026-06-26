@@ -15,6 +15,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.background
 import coil.compose.AsyncImage
 import com.example.myapplication1.ui.recipes.RecipeUiModel
 import com.example.myapplication1.ui.recipes.IngredientItem
@@ -49,7 +52,7 @@ fun RecipeDetailsScreen(recipe: RecipeUiModel) {
 
             // Рисуем разделитель только если это не последний элемент
             if (index < recipe.ingredients.lastIndex) {
-                androidx.compose.material3.Divider(
+                Divider(
                     modifier = Modifier.padding(start = Dimens.Padding.PaddingMain, end = Dimens.Padding.PaddingMain)
                 )
             }
@@ -62,9 +65,12 @@ fun RecipeDetailsScreen(recipe: RecipeUiModel) {
             fontSize = 18.sp
         )
 
-        recipe.method.forEach { step ->
+        val stepRegex = Regex("^\\d+\\.\\s*")
+
+        recipe.method.forEachIndexed { index, step ->
+            val cleanStep = step.replace(stepRegex, "")
             Text(
-                text = step,
+                text = "${index + 1}. $cleanStep",
                 modifier = Modifier
                     .padding(start = Dimens.Padding.PaddingMain, top = 8.dp, end = Dimens.Padding.PaddingMain)
             )
@@ -83,7 +89,7 @@ private fun ScreenHeader(title: String, imageUrl: String) {
             model = imageUrl,
             contentDescription = "Header image for $title",
             modifier = Modifier.fillMaxSize(),
-            contentScale = androidx.compose.ui.layout.ContentScale.Crop
+            contentScale = ContentScale.Crop
         )
         Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.5f)))
         Text(
