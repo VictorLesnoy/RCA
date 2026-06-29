@@ -65,7 +65,7 @@ fun RecipeDetailsScreen(recipe: RecipeUiModel) {
             fontSize = 18.sp
         )
 
-        val stepRegex = Regex("^\\d+\\.\\s*")
+        val stepRegex = remember { Regex("^\\d+\\.\\s*") }
 
         recipe.method.forEachIndexed { index, step ->
             val cleanStep = step.replace(stepRegex, "")

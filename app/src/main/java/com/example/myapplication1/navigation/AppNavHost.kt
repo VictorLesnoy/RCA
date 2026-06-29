@@ -1,18 +1,26 @@
 package com.example.myapplication1.navigation
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.NavBackStackEntry
-import com.example.myapplication1.screens.CategoriesScreen
-import com.example.myapplication1.ui.recipes.RecipesScreen
-import com.example.myapplication1.ui.recipes.RecipeUiModel
-import com.example.myapplication1.ui.details.RecipeDetailsScreen
-import com.example.myapplication1.KEY_RECIPE_OBJECT
-import com.example.myapplication1.data.repository.RecipesRepositoryStub
 import androidx.navigation.navArgument
 import androidx.navigation.NavType
+import com.example.myapplication1.data.repository.RecipesRepositoryStub
+import com.example.myapplication1.screens.CategoriesScreen
+import com.example.myapplication1.ui.details.RecipeDetailsScreen
+import com.example.myapplication1.ui.recipes.RecipeUiModel
+import com.example.myapplication1.ui.recipes.RecipesScreen
+import com.example.myapplication1.KEY_RECIPE_OBJECT
 
 @Composable
 fun AppNavHost() {
@@ -93,17 +101,17 @@ fun AppNavHost() {
                 RecipeDetailsScreen(recipe = recipeToDisplay)
             } else {
                 // Экран ошибки, если рецепт не найден
-                androidx.compose.foundation.layout.Column(
-                    modifier = androidx.compose.ui.Modifier.fillMaxSize(),
-                    verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
-                    horizontalAlignment = androidx.compose.foundation.layout.Alignment.CenterHorizontally
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    androidx.compose.material3.Text(
+                    Text(
                         text = "Рецепт с ID $recipeId не найден",
-                        color = androidx.compose.ui.graphics.Color.Red
+                        color = Color.Red
                     )
-                    androidx.compose.material3.Button(onClick = { navController.popBackStack() }) {
-                        androidx.compose.material3.Text("Назад")
+                    Button(onClick = { navController.popBackStack() }) {
+                        Text("Назад")
                     }
                 }
             }

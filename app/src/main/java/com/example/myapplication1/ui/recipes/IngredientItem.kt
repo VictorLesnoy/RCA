@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.myapplication1.ui.recipes.IngredientUiModel
+import androidx.compose.ui.text.font.FontWeight
 
 @Composable
 fun IngredientItem(
@@ -24,13 +24,13 @@ fun IngredientItem(
         // Количество и единицы измерения (например, "2 ст. л.")
         Text(
             text = "${ingredient.quantity} ${ingredient.unitOfMeasure}",
-            fontWeight = androidx.compose.ui.text.font.FontWeight.Medium,
+            fontWeight = FontWeight.Medium,
             modifier = Modifier.padding(end = 8.dp)
         )
 
         // Название ингредиента
         Text(
-            text = ingredient.description,
+            text = ingredient.name,
             modifier = Modifier.weight(1f)
         )
     }
