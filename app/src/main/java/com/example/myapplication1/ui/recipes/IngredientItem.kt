@@ -31,7 +31,6 @@ fun IngredientItem(
         // Название ингредиента
         Text(
             text = ingredient.name,
-            modifier = Modifier.weight(1f)
         )
     }
 }

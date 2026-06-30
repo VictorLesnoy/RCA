@@ -23,12 +23,16 @@ import com.example.myapplication1.ui.recipes.RecipeUiModel
 import com.example.myapplication1.ui.recipes.IngredientItem
 import com.example.myapplication1.ui.theme.Dimens
 
+private val stepRegex = Regex("^\\d+\\.\\s*")
+
 @Composable
 fun RecipeDetailsScreen(recipe: RecipeUiModel) {
+    val scrollState = rememberScrollState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(enabled = true)
+            .verticalScroll(state = scrollState)
             .padding(bottom = Dimens.Padding.PaddingMain)
     ) {
         ScreenHeader(
@@ -64,8 +68,6 @@ fun RecipeDetailsScreen(recipe: RecipeUiModel) {
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp
         )
-
-        val stepRegex = remember { Regex("^\\d+\\.\\s*") }
 
         recipe.method.forEachIndexed { index, step ->
             val cleanStep = step.replace(stepRegex, "")

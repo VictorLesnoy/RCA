@@ -93,14 +93,12 @@ fun AppNavHost() {
             val recipeToDisplay = try {
                 savedRecipe ?: RecipesRepositoryStub.getRecipeById(recipeId).toUiModel()
             } catch (e: IllegalArgumentException) {
-                // Обработка случая, когда рецепт не найден
                 null
             }
 
             if (recipeToDisplay != null) {
                 RecipeDetailsScreen(recipe = recipeToDisplay)
             } else {
-                // Экран ошибки, если рецепт не найден
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,

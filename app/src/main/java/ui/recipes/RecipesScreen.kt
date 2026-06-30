@@ -21,6 +21,7 @@ import com.example.myapplication1.ui.theme.Dimens
 @Composable
 fun RecipesScreen(
     categoryId: Int,
+    onBackClick: () -> Unit,
     onRecipeClick: (Int, RecipeUiModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
