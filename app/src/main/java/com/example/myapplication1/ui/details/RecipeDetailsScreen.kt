@@ -22,6 +22,7 @@ import coil.compose.AsyncImage
 import com.example.myapplication1.ui.recipes.RecipeUiModel
 import com.example.myapplication1.ui.recipes.IngredientItem
 import com.example.myapplication1.ui.theme.Dimens
+import androidx.compose.foundation.rememberScrollState
 
 private val stepRegex = Regex("^\\d+\\.\\s*")
 

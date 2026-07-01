@@ -21,6 +21,7 @@ import com.example.myapplication1.ui.details.RecipeDetailsScreen
 import com.example.myapplication1.ui.recipes.RecipeUiModel
 import com.example.myapplication1.ui.recipes.RecipesScreen
 import com.example.myapplication1.KEY_RECIPE_OBJECT
+import com.example.myapplication1.ui.recipes.toUiModel
 
 @Composable
 fun AppNavHost() {
