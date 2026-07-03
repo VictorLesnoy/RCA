@@ -1,10 +1,12 @@
 package com.example.myapplication1.ui.details
 
+import android.content.Context
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,20 +17,24 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.background
 import coil.compose.AsyncImage
+import com.example.myapplication1.utils.ShareUtils // <-- Важно: импорт ShareUtils
 import com.example.myapplication1.ui.recipes.RecipeUiModel
 import com.example.myapplication1.ui.recipes.IngredientItem
 import com.example.myapplication1.ui.theme.Dimens
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 
 private val stepRegex = Regex("^\\d+\\.\\s*")
 
 @Composable
 fun RecipeDetailsScreen(recipe: RecipeUiModel) {
     val scrollState = rememberScrollState()
+    val context: Context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -48,14 +54,12 @@ fun RecipeDetailsScreen(recipe: RecipeUiModel) {
             fontSize = 18.sp
         )
 
-        // Список ингредиентов с разделителями между элементами
         recipe.ingredients.forEachIndexed { index, ingredient ->
             IngredientItem(
                 ingredient = ingredient,
                 modifier = Modifier.padding(horizontal = Dimens.Padding.PaddingMain)
             )
 
-            // Рисуем разделитель только если это не последний элемент
             if (index < recipe.ingredients.lastIndex) {
                 Divider(
                     modifier = Modifier.padding(start = Dimens.Padding.PaddingMain, end = Dimens.Padding.PaddingMain)
@@ -77,6 +81,22 @@ fun RecipeDetailsScreen(recipe: RecipeUiModel) {
                 modifier = Modifier
                     .padding(start = Dimens.Padding.PaddingMain, top = 8.dp, end = Dimens.Padding.PaddingMain)
             )
+        }
+
+        // --- КНОПКА «ПОДЕЛИТЬСЯ» ---
+        Spacer(modifier = Modifier.height(24.dp))
+        Button(
+            onClick = {
+                ShareUtils.shareRecipe(context = context, recipeId = recipe.id)
+                    .let { intent ->
+                        context.startActivity(Intent.createChooser(intent, "Поделиться рецептом"))
+                    }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = Dimens.Padding.PaddingMain)
+        ) {
+            Text("📤 Поделиться рецептом")
         }
     }
 }
