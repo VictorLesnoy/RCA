@@ -41,6 +41,10 @@ android {
 }
 
 dependencies {
+    implementation(platform("androidx.compose:compose-bom:2024.02.01")) // BOM для версий Compose
+    implementation("androidx.compose.foundation:foundation")
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.ui:ui")
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

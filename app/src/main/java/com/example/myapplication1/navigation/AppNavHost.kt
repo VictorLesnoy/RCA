@@ -1,5 +1,6 @@
 package com.example.myapplication1.navigation
 
+import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,14 +25,40 @@ import com.example.myapplication1.KEY_RECIPE_OBJECT
 import com.example.myapplication1.ui.recipes.toUiModel
 
 @Composable
-fun AppNavHost() {
+fun AppNavHost(
+    deepLinkIntent: Intent? = null,
+    modifier: Modifier = Modifier
+) {
     val navController = rememberNavController()
+
+    // Обработка Deep Link: срабатывает при изменении deepLinkIntent
+    LaunchedEffect(deepLinkIntent) {
+        val uri = deepLinkIntent?.data ?: return@LaunchedEffect
+
+        // Поддерживаем обе схемы: recipeapp:// и https://
+        // Путь должен быть /recipe/{id}
+        val pathSegments = uri.pathSegments
+
+        if (pathSegments.size >= 2 && pathSegments[0] == "recipe") {
+            val recipeIdString = pathSegments[1]
+            val recipeId = recipeIdString.toIntOrNull()
+
+            if (recipeId != null) {
+                // Проверяем, не находимся ли мы уже на экране RecipeDetail
+                val currentRoute = navController.currentBackStackEntry?.destination?.route
+                if (currentRoute != Destination.RecipeDetail.route) {
+                    navController.navigate(Destination.RecipeDetail.createRoute(recipeId))
+                }
+            }
+        }
+    }
 
     NavHost(
         navController = navController,
-        startDestination = Destination.Categories.route
+        startDestination = Destination.Categories.route,
+        modifier = modifier
     ) {
-        // Экран категорий
+
         composable(Destination.Categories.route) { backStackEntry ->
             CategoriesScreen(
                 onCategoryClick = { categoryId ->
@@ -40,7 +67,6 @@ fun AppNavHost() {
             )
         }
 
-        // Экран рецептов с параметром categoryId
         composable(
             route = Destination.Recipes.route,
             arguments = listOf(
@@ -64,7 +90,6 @@ fun AppNavHost() {
                         key = KEY_RECIPE_OBJECT,
                         value = recipeModel
                     )
-                    // Навигация на экран деталей с ID рецепта
                     navController.navigate(
                         Destination.RecipeDetail.createRoute(recipeId)
                     )
@@ -72,7 +97,6 @@ fun AppNavHost() {
             )
         }
 
-        // Экран деталей рецепта
         composable(
             route = Destination.RecipeDetail.route,
             arguments = listOf(
@@ -85,12 +109,10 @@ fun AppNavHost() {
                 Destination.RecipeDetail.RECIPE_ID_ARG
             ) ?: 0
 
-            // Получаем сохранённый объект рецепта из предыдущего экрана
             val savedRecipe: RecipeUiModel? = navController.previousBackStackEntry
                 ?.savedStateHandle
                 ?.get<RecipeUiModel>(KEY_RECIPE_OBJECT)
 
-            // Пытаемся получить рецепт: сначала из кэша, потом из репозитория
             val recipeToDisplay = try {
                 savedRecipe ?: RecipesRepositoryStub.getRecipeById(recipeId).toUiModel()
             } catch (e: IllegalArgumentException) {

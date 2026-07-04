@@ -1,6 +1,9 @@
 package com.example.myapplication1.ui.details
 
 import android.content.Context
+import android.content.Intent
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -85,12 +88,11 @@ fun RecipeDetailsScreen(recipe: RecipeUiModel) {
 
         // --- КНОПКА «ПОДЕЛИТЬСЯ» ---
         Spacer(modifier = Modifier.height(24.dp))
+
         Button(
             onClick = {
-                ShareUtils.shareRecipe(context = context, recipeId = recipe.id)
-                    .let { intent ->
-                        context.startActivity(Intent.createChooser(intent, "Поделиться рецептом"))
-                    }
+                val shareIntent = ShareUtils.shareRecipe(context = context, recipeId = recipe.id)
+                context.startActivity(Intent.createChooser(shareIntent, "Поделиться рецептом"))
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -98,7 +100,6 @@ fun RecipeDetailsScreen(recipe: RecipeUiModel) {
         ) {
             Text("📤 Поделиться рецептом")
         }
-    }
 }
 
 @Composable
