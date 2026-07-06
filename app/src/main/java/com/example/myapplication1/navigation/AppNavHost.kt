@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,7 +22,6 @@ import com.example.myapplication1.screens.CategoriesScreen
 import com.example.myapplication1.ui.details.RecipeDetailsScreen
 import com.example.myapplication1.ui.recipes.RecipeUiModel
 import com.example.myapplication1.ui.recipes.RecipesScreen
-import com.example.myapplication1.KEY_RECIPE_OBJECT
 import com.example.myapplication1.ui.recipes.toUiModel
 
 @Composable
@@ -31,12 +31,9 @@ fun AppNavHost(
 ) {
     val navController = rememberNavController()
 
-    // Обработка Deep Link: срабатывает при изменении deepLinkIntent
     LaunchedEffect(deepLinkIntent) {
         val uri = deepLinkIntent?.data ?: return@LaunchedEffect
 
-        // Поддерживаем обе схемы: recipeapp:// и https://
-        // Путь должен быть /recipe/{id}
         val pathSegments = uri.pathSegments
 
         if (pathSegments.size >= 2 && pathSegments[0] == "recipe") {
@@ -44,7 +41,6 @@ fun AppNavHost(
             val recipeId = recipeIdString.toIntOrNull()
 
             if (recipeId != null) {
-                // Проверяем, не находимся ли мы уже на экране RecipeDetail
                 val currentRoute = navController.currentBackStackEntry?.destination?.route
                 if (currentRoute != Destination.RecipeDetail.route) {
                     navController.navigate(Destination.RecipeDetail.createRoute(recipeId))
@@ -84,12 +80,7 @@ fun AppNavHost(
                 onBackClick = {
                     navController.popBackStack()
                 },
-                onRecipeClick = { recipeId, recipeModel ->
-                    // Сохраняем объект рецепта в savedStateHandle текущего экрана
-                    navController.currentBackStackEntry?.savedStateHandle?.set(
-                        key = KEY_RECIPE_OBJECT,
-                        value = recipeModel
-                    )
+                onRecipeClick = { recipeId, _ ->
                     navController.navigate(
                         Destination.RecipeDetail.createRoute(recipeId)
                     )
@@ -109,12 +100,8 @@ fun AppNavHost(
                 Destination.RecipeDetail.RECIPE_ID_ARG
             ) ?: 0
 
-            val savedRecipe: RecipeUiModel? = navController.previousBackStackEntry
-                ?.savedStateHandle
-                ?.get<RecipeUiModel>(KEY_RECIPE_OBJECT)
-
             val recipeToDisplay = try {
-                savedRecipe ?: RecipesRepositoryStub.getRecipeById(recipeId).toUiModel()
+                RecipesRepositoryStub.getRecipeById(recipeId).toUiModel()
             } catch (e: IllegalArgumentException) {
                 null
             }
