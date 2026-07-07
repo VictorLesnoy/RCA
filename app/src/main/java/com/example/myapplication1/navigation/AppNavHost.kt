@@ -34,17 +34,26 @@ fun AppNavHost(
     LaunchedEffect(deepLinkIntent) {
         val uri = deepLinkIntent?.data ?: return@LaunchedEffect
 
-        val pathSegments = uri.pathSegments
+        var recipeId: Int? = null
 
-        if (pathSegments.size >= 2 && pathSegments[0] == "recipe") {
-            val recipeIdString = pathSegments[1]
-            val recipeId = recipeIdString.toIntOrNull()
-
-            if (recipeId != null) {
-                val currentRoute = navController.currentBackStackEntry?.destination?.route
-                if (currentRoute != Destination.RecipeDetail.route) {
-                    navController.navigate(Destination.RecipeDetail.createRoute(recipeId))
+        when (uri.scheme) {
+            "recipeapp" -> {
+                if (uri.host == "recipe" && uri.pathSegments.size == 1) {
+                    recipeId = uri.pathSegments[0].toIntOrNull()
                 }
+            }
+
+            "http", "https" -> {
+                if (uri.pathSegments.size >= 2 && uri.pathSegments[0] == "recipe") {
+                    recipeId = uri.pathSegments[1].toIntOrNull()
+                }
+            }
+        }
+
+        if (recipeId != null) {
+            val currentRoute = navController.currentBackStackEntry?.destination?.route
+            if (currentRoute != Destination.RecipeDetail.route) {
+                navController.navigate(Destination.RecipeDetail.createRoute(recipeId))
             }
         }
     }
