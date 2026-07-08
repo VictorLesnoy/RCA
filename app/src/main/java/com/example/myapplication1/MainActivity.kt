@@ -2,35 +2,34 @@ package com.example.myapplication1
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsStateWithLifecycle
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.ViewModelProvider
 import com.example.myapplication1.navigation.AppNavHost
 import com.example.myapplication1.ui.theme.MyApplication1Theme
 
 class MainActivity : ComponentActivity() {
 
-    private lateinit var viewModel: MainActivityViewModel
+    private var latestIntent: Intent? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel = ViewModelProvider(this)[MainActivityViewModel::class.java]
-
-        viewModel.updateIntent(intent)
+        latestIntent = intent
 
         setContent {
             MyApplication1Theme {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    val currentIntent by viewModel.deepLinkIntent.collectAsStateWithLifecycle()
+                    var deepLinkIntent by remember { mutableStateOf(latestIntent) }
 
-                    AppNavHost(deepLinkIntent = currentIntent)
+                    deepLinkIntent = latestIntent
+
+                    AppNavHost(deepLinkIntent = deepLinkIntent)
                 }
             }
         }
@@ -40,6 +39,6 @@ class MainActivity : ComponentActivity() {
         super.onNewIntent(newIntent)
         setIntent(newIntent)
 
-        viewModel.updateIntent(newIntent)
+        latestIntent = newIntent
     }
 }
