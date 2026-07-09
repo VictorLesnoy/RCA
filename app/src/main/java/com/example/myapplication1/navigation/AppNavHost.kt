@@ -17,6 +17,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.NavType
+import kotlinx.coroutines.delay
 import com.example.myapplication1.data.repository.RecipesRepositoryStub
 import com.example.myapplication1.screens.CategoriesScreen
 import com.example.myapplication1.ui.details.RecipeDetailsScreen
@@ -51,10 +52,18 @@ fun AppNavHost(
         }
 
         if (recipeId != null) {
-            val currentRoute = navController.currentBackStackEntry?.destination?.route
-            if (currentRoute != Destination.RecipeDetail.route) {
-                navController.navigate(Destination.RecipeDetail.createRoute(recipeId))
-            }
+            // Получаем текущий ID рецепта, если мы сейчас на экране детали
+            val currentRecipeId = navController.currentBackStackEntry?.arguments?.getInt(
+                Destination.RecipeDetail.RECIPE_ID_ARG
+            )
+
+            // Если ID совпадает с тем, что уже открыт — ничего не делаем
+            if (currentRecipeId == recipeId) return@LaunchedEffect
+
+            // Небольшая задержка, чтобы граф навигации успел полностью инициализироваться
+            delay(100)
+
+            navController.navigate(Destination.RecipeDetail.createRoute(recipeId))
         }
     }
 

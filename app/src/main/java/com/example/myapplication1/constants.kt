@@ -1,11 +1,10 @@
-package com.example.myapplication1.navigation
+package com.example.myapplication1
 
 // --- КОНСТАНТЫ ДЛЯ DEEP LINKS ---
 const val DEEP_LINK_SCHEME = "recipeapp"          // схема для тестов через ADB и внутренней навигации
 const val DEEP_LINK_BASE_URL = "recipes.androidsprint.ru" // домен для шаринга и App Links
 
-// Имя параметра для ID рецепта в маршруте навигации
-//const val PARAM_RECIPE_ID = "recipe_id"
+const val ASSETS_URI_PREFIX = "file:///android_asset/"
 
 /**
  * Создаёт URI для глубокой ссылки на рецепт (кастомная схема).
@@ -22,4 +21,3 @@ fun createRecipeDeepLink(recipeId: Int): String {
 fun createHttpShareLink(recipeId: Int): String {
     return "https://$DEEP_LINK_BASE_URL/recipe/$recipeId"
 }
-
