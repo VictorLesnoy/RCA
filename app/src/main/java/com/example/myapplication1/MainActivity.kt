@@ -26,13 +26,13 @@ class MainActivity : ComponentActivity() {
             MyApplication1Theme {
                 Surface(modifier = Modifier.fillMaxSize()) {
                     // Храним сам MutableState, а не значение
-                    val deepLinkState = remember { mutableStateOf(latestIntent) }
+                    var deepLinkIntent by remember { mutableStateOf(latestIntent) }
 
                     // Синхронизируем значение внутри состояния с полем Activity
-                    deepLinkState.value = latestIntent
+                    deepLinkIntent = latestIntent
 
                     // Передаём текущее значение в AppNavHost
-                    AppNavHost(deepLinkIntent = deepLinkState.value)
+                    AppNavHost(deepLinkIntent = deepLinkIntent)
                 }
             }
         }
@@ -46,4 +46,3 @@ class MainActivity : ComponentActivity() {
         // При следующей рекомпозиции deepLinkState.value подтянет новое значение
     }
 }
-
