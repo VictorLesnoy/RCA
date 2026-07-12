@@ -26,7 +26,6 @@ object ShareUtils {
         return Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
             putExtra(Intent.EXTRA_TEXT, shareText)
-            addFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK)
         }
     }
 }
