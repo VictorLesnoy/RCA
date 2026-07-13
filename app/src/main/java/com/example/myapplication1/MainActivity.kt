@@ -15,24 +15,19 @@ import com.example.myapplication1.ui.theme.MyApplication1Theme
 
 class MainActivity : ComponentActivity() {
 
-    private var latestIntent: Intent? = null
+    private val deepLinkIntentState: MutableState<Intent?> = mutableStateOf(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        latestIntent = intent
+        deepLinkIntentState.value = intent
 
         setContent {
             MyApplication1Theme {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    // Храним сам MutableState, а не значение
-                    var deepLinkIntent by remember { mutableStateOf(latestIntent) }
-
-                    // Синхронизируем значение внутри состояния с полем Activity
-                    deepLinkIntent = latestIntent
 
                     // Передаём текущее значение в AppNavHost
-                    AppNavHost(deepLinkIntent = deepLinkIntent)
+                    AppNavHost(deepLinkIntentState = deepLinkIntentState)
                 }
             }
         }
@@ -42,7 +37,6 @@ class MainActivity : ComponentActivity() {
         super.onNewIntent(newIntent)
         setIntent(newIntent)
 
-        latestIntent = newIntent
-        // При следующей рекомпозиции deepLinkState.value подтянет новое значение
+        deepLinkIntentState.value = newIntent
     }
 }

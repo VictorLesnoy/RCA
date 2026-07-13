@@ -32,8 +32,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="https"
-                    android:host="recipes.androidsprint.ru" />
+                    android:scheme="recipeapp"
+                    android:host="recipe" />
             </intent-filter>
 
             <!-- Глубокая ссылка по домену: https://recipes.androidsprint.ru -->

@@ -27,9 +27,8 @@ import com.example.myapplication1.ui.recipes.toUiModel
 
 @Composable
 fun AppNavHost(
-    deepLinkIntent: Intent? = null,
-    modifier: Modifier = Modifier
-) {
+    deepLinkIntentState: State<Intent?>) {
+    val deepLinkIntent = deepLinkIntentState.value
     val navController = rememberNavController()
 
     LaunchedEffect(deepLinkIntent) {
