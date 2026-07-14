@@ -27,8 +27,9 @@ import com.example.myapplication1.ui.recipes.toUiModel
 
 @Composable
 fun AppNavHost(
-    deepLinkIntentState: State<Intent?>) {
-    val deepLinkIntent = deepLinkIntentState.value
+    deepLinkIntent: Intent? = null,
+    modifier: Modifier = Modifier
+) {
     val navController = rememberNavController()
 
     LaunchedEffect(deepLinkIntent) {
@@ -56,7 +57,7 @@ fun AppNavHost(
                 Destination.RecipeDetail.RECIPE_ID_ARG
             )
 
-            // Если ID совпадает с тем, что уже открыт — ничего не делаем
+            // Если ID совпадает с тем, что уже открыт — ничего не делаем (защита от лишних переходов)
             if (currentRecipeId == recipeId) return@LaunchedEffect
 
             // Небольшая задержка, чтобы граф навигации успел полностью инициализироваться
