@@ -12,10 +12,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.example.myapplication1.navigation.AppNavHost
 import com.example.myapplication1.ui.theme.MyApplication1Theme
+import java.lang.reflect.Modifier
+import java.nio.file.WatchEvent
 
 class MainActivity : ComponentActivity() {
 
-    private val deepLinkIntentState: MutableState<Intent?> = mutableStateOf(null)
+    private val deepLinkIntentState = mutableStateOf<Intent?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +29,8 @@ class MainActivity : ComponentActivity() {
                 Surface(modifier = Modifier.fillMaxSize()) {
 
                     // Передаём текущее значение в AppNavHost
-                    AppNavHost(deepLinkIntentState = deepLinkIntentState)
+                    AppNavHost(deepLinkIntent = deepLinkIntentState.value,
+                        modifier = Modifier.fillMaxSize())
                 }
             }
         }
