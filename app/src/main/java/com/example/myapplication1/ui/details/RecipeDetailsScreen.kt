@@ -1,10 +1,16 @@
 package com.example.myapplication1.ui.details
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,23 +18,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.background
+import androidx.compose.foundation.rememberScrollState
 import coil.compose.AsyncImage
+import com.example.myapplication1.utils.ShareUtils
 import com.example.myapplication1.ui.recipes.RecipeUiModel
 import com.example.myapplication1.ui.recipes.IngredientItem
 import com.example.myapplication1.ui.theme.Dimens
-import androidx.compose.foundation.rememberScrollState
 
 private val stepRegex = Regex("^\\d+\\.\\s*")
 
 @Composable
 fun RecipeDetailsScreen(recipe: RecipeUiModel) {
     val scrollState = rememberScrollState()
+    val context: Context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -48,14 +55,12 @@ fun RecipeDetailsScreen(recipe: RecipeUiModel) {
             fontSize = 18.sp
         )
 
-        // Список ингредиентов с разделителями между элементами
         recipe.ingredients.forEachIndexed { index, ingredient ->
             IngredientItem(
                 ingredient = ingredient,
                 modifier = Modifier.padding(horizontal = Dimens.Padding.PaddingMain)
             )
 
-            // Рисуем разделитель только если это не последний элемент
             if (index < recipe.ingredients.lastIndex) {
                 Divider(
                     modifier = Modifier.padding(start = Dimens.Padding.PaddingMain, end = Dimens.Padding.PaddingMain)
@@ -77,6 +82,20 @@ fun RecipeDetailsScreen(recipe: RecipeUiModel) {
                 modifier = Modifier
                     .padding(start = Dimens.Padding.PaddingMain, top = 8.dp, end = Dimens.Padding.PaddingMain)
             )
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Button(
+            onClick = {
+                val shareIntent = ShareUtils.shareRecipe(context = context, recipeId = recipe.id)
+                context.startActivity(Intent.createChooser(shareIntent, "Поделиться рецептом"))
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = Dimens.Padding.PaddingMain)
+        ) {
+            Text("📤 Поделиться рецептом")
         }
     }
 }

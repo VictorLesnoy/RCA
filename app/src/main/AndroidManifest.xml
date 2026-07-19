@@ -11,17 +11,41 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication1">
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.MyApplication1">
+            android:theme="@style/Theme.MyApplication1"
+            android:launchMode="singleTop">
+
+            <!-- Стандартный фильтр для запуска из лаунчера -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!-- Глубокая ссылка по кастомной схеме: recipeapp:// -->
+            <intent-filter android:autoVerify="false">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="recipeapp"
+                    android:host="recipe" />
+            </intent-filter>
+
+            <!-- Глубокая ссылка по домену: https://recipes.androidsprint.ru -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="https"
+                    android:host="recipes.androidsprint.ru" />
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

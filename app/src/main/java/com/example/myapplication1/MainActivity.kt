@@ -1,39 +1,45 @@
 package com.example.myapplication1
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.material3.MaterialTheme
 import com.example.myapplication1.navigation.AppNavHost
+import com.example.myapplication1.ui.theme.MyApplication1Theme
+import java.lang.reflect.Modifier
+import java.nio.file.WatchEvent
 
 class MainActivity : ComponentActivity() {
+
+    private val deepLinkIntentState = mutableStateOf<Intent?>(null)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        deepLinkIntentState.value = intent
+
         setContent {
             MyApplication1Theme {
-                AppNavHost()
+                Surface(modifier = Modifier.fillMaxSize()) {
+
+                    // Передаём текущее значение в AppNavHost
+                    AppNavHost(deepLinkIntent = deepLinkIntentState.value,
+                        modifier = Modifier.fillMaxSize())
+                }
             }
         }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+    override fun onNewIntent(newIntent: Intent) {
+        super.onNewIntent(newIntent)
+        setIntent(newIntent)
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MaterialTheme {
-        Greeting("Android")
+        deepLinkIntentState.value = newIntent
     }
 }
