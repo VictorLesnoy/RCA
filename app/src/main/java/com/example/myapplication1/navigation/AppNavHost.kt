@@ -125,7 +125,13 @@ fun AppNavHost(
             }
 
             if (recipeToDisplay != null) {
-                RecipeDetailsScreen(recipe = recipeToDisplay)
+                var isFavorite by rememberSaveable { mutableStateOf(false) }
+
+                RecipeDetailsScreen(
+                    recipe = recipeToDisplay,
+                    isFavorite = isFavorite,
+                    onFavoriteToggle = { isFavorite = !isFavorite }
+                    )
             } else {
                 Column(
                     modifier = Modifier.fillMaxSize(),
