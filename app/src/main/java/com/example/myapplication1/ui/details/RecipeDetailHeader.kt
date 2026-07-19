@@ -3,13 +3,18 @@ package com.example.myapplication1.ui.details
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.myapplication1.R
+import com.example.myapplication1.ui.theme.Dimens
 
 @Composable
 fun RecipeDetailHeader(
@@ -18,6 +23,18 @@ fun RecipeDetailHeader(
     isFavorite: Boolean,
     onFavoriteToggle: () -> Unit
 ) {
+    // Кэшируем ImageVector через rememberVectorPainter — это требование задания
+    val favoriteFilledPainter = remember {
+        androidx.compose.ui.graphics.painter.rememberVectorPainter(
+            image = vectorResource(id = R.drawable.ic_favorite_filled)
+        )
+    }
+    val favoriteOutlinePainter = remember {
+        androidx.compose.ui.graphics.painter.rememberVectorPainter(
+            image = vectorResource(id = R.drawable.ic_favorite_outline)
+        )
+    }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -53,13 +70,10 @@ fun RecipeDetailHeader(
                 interactionSource = interactionSource,
                 modifier = Modifier.size(40.dp)
             ) {
-                // Анимированный переход между иконками
+                // Плавная анимация смены иконок
                 Crossfade(targetState = isFavorite, animationSpec = tween(durationMillis = 200)) { favorite ->
                     Icon(
-                        painter = if (favorite)
-                            painterResource(id = R.drawable.ic_favorite_filled)
-                        else
-                            painterResource(id = R.drawable.ic_favorite_outline),
+                        painter = if (favorite) favoriteFilledPainter else favoriteOutlinePainter,
                         contentDescription = if (favorite) "Убрать из избранного" else "Добавить в избранное",
                         tint = if (favorite) Color.Red else Color.White
                     )

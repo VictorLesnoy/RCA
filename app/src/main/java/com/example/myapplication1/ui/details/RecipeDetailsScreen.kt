@@ -19,6 +19,7 @@ import com.example.myapplication1.utils.ShareUtils
 import com.example.myapplication1.ui.recipes.RecipeUiModel
 import com.example.myapplication1.ui.recipes.IngredientItem
 import com.example.myapplication1.ui.theme.Dimens
+import com.example.myapplication1.ui.components.ScreenHeader
 
 private val stepRegex = Regex("^\\d+\\.\\s*")
 
@@ -34,7 +35,7 @@ fun RecipeDetailsScreen(
     var servings by rememberSaveable { mutableStateOf(recipe.servings ?: 1) }
 
     // Пересчёт ТОЛЬКО при изменении recipe.ingredients ИЛИ servings
-    val scaledIngredients by remember(recipe.ingredients, servings) {
+    val scaledIngredients = remember(recipe.ingredients, servings) {
         scaleIngredients(
             ingredients = recipe.ingredients,
             servings = servings,
@@ -48,9 +49,10 @@ fun RecipeDetailsScreen(
             .verticalScroll(state = scrollState)
             .padding(bottom = Dimens.Padding.PaddingMain)
     ) {
-        RecipeDetailHeader(
+        ScreenHeader(
             title = recipe.title,
             imageUrl = recipe.imageUrl,
+            showFavoriteButton = true,
             isFavorite = isFavorite,
             onFavoriteToggle = onFavoriteToggle
         )
