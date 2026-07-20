@@ -8,16 +8,18 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import coil.compose.ContentScale
 import com.example.myapplication1.R
 import com.example.myapplication1.ui.theme.Dimens
 
@@ -29,6 +31,18 @@ fun ScreenHeader(
     isFavorite: Boolean = false,
     onFavoriteToggle: (() -> Unit)? = null
 ) {
+    // Кэшируем векторные иконки через rememberVectorPainter — требование задания
+    val favoriteFilledPainter = remember {
+        androidx.compose.ui.graphics.painter.rememberVectorPainter(
+            image = vectorResource(id = R.drawable.ic_favorite_filled)
+        )
+    }
+    val favoriteOutlinePainter = remember {
+        androidx.compose.ui.graphics.painter.rememberVectorPainter(
+            image = vectorResource(id = R.drawable.ic_favorite_outline)
+        )
+    }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -38,7 +52,7 @@ fun ScreenHeader(
             model = imageUrl,
             contentDescription = "Header image for $title",
             modifier = Modifier.fillMaxSize(),
-            contentScale = androidx.compose.foundation.layout.ContentScale.Crop
+            contentScale = ContentScale.Crop  // корректный импорт из coil.compose
         )
         Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.5f)))
 
@@ -67,10 +81,7 @@ fun ScreenHeader(
                 ) {
                     Crossfade(targetState = isFavorite, animationSpec = tween(durationMillis = 200)) { favorite ->
                         Icon(
-                            painter = if (favorite)
-                                painterResource(id = R.drawable.ic_favorite_filled)
-                            else
-                                painterResource(id = R.drawable.ic_favorite_outline),
+                            painter = if (favorite) favoriteFilledPainter else favoriteOutlinePainter,
                             contentDescription = if (favorite) "Убрать из избранного" else "Добавить в избранное",
                             tint = if (favorite) Color.Red else Color.White
                         )

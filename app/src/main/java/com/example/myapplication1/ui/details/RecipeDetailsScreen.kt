@@ -2,39 +2,42 @@ package com.example.myapplication1.ui.details
 
 import android.content.Context
 import android.content.Intent
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.background
-import androidx.compose.foundation.rememberScrollState
 import coil.compose.AsyncImage
+import coil.compose.ContentScale
 import com.example.myapplication1.utils.ShareUtils
 import com.example.myapplication1.ui.recipes.RecipeUiModel
 import com.example.myapplication1.ui.recipes.IngredientItem
 import com.example.myapplication1.ui.theme.Dimens
 import com.example.myapplication1.ui.components.ScreenHeader
 
+import com.example.myapplication1.ui.recipes.scaleIngredients
+
 private val stepRegex = Regex("^\\d+\\.\\s*")
 
 @Composable
 fun RecipeDetailsScreen(
-    recipe: RecipeUiModel,
-    isFavorite: Boolean,
-    onFavoriteToggle: () -> Unit
+    recipe: RecipeUiModel
 ) {
     val scrollState = rememberScrollState()
     val context: Context = LocalContext.current
 
     var servings by rememberSaveable { mutableStateOf(recipe.servings ?: 1) }
+    var isFavorite by rememberSaveable { mutableStateOf(false) }
 
-    // Пересчёт ТОЛЬКО при изменении recipe.ingredients ИЛИ servings
     val scaledIngredients = remember(recipe.ingredients, servings) {
         scaleIngredients(
             ingredients = recipe.ingredients,
@@ -49,12 +52,11 @@ fun RecipeDetailsScreen(
             .verticalScroll(state = scrollState)
             .padding(bottom = Dimens.Padding.PaddingMain)
     ) {
-        ScreenHeader(
+        RecipeDetailHeader(
             title = recipe.title,
             imageUrl = recipe.imageUrl,
-            showFavoriteButton = true,
             isFavorite = isFavorite,
-            onFavoriteToggle = onFavoriteToggle
+            onFavoriteToggle = { isFavorite = !isFavorite }
         )
 
         Spacer(modifier = Modifier.height(16.dp))

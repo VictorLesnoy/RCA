@@ -6,13 +6,13 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.compose.ContentScale
 import com.example.myapplication1.R
 import com.example.myapplication1.ui.theme.Dimens
 
@@ -23,17 +23,13 @@ fun RecipeDetailHeader(
     isFavorite: Boolean,
     onFavoriteToggle: () -> Unit
 ) {
-    // Кэшируем ImageVector через rememberVectorPainter — это требование задания
-    val favoriteFilledPainter = remember {
-        androidx.compose.ui.graphics.painter.rememberVectorPainter(
-            image = vectorResource(id = R.drawable.ic_favorite_filled)
-        )
-    }
-    val favoriteOutlinePainter = remember {
-        androidx.compose.ui.graphics.painter.rememberVectorPainter(
-            image = vectorResource(id = R.drawable.ic_favorite_outline)
-        )
-    }
+    val favoriteFilledPainter = androidx.compose.ui.graphics.painter.rememberVectorPainter(
+        image = vectorResource(id = R.drawable.ic_favorite_filled)
+    )
+
+    val favoriteOutlinePainter = androidx.compose.ui.graphics.painter.rememberVectorPainter(
+        image = vectorResource(id = R.drawable.ic_favorite_outline)
+    )
 
     Box(
         modifier = Modifier
@@ -44,7 +40,7 @@ fun RecipeDetailHeader(
             model = imageUrl,
             contentDescription = "Header image for $title",
             modifier = Modifier.fillMaxSize(),
-            contentScale = androidx.compose.foundation.layout.ContentScale.Crop
+            contentScale = ContentScale.Crop
         )
         Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.5f)))
 
@@ -70,7 +66,6 @@ fun RecipeDetailHeader(
                 interactionSource = interactionSource,
                 modifier = Modifier.size(40.dp)
             ) {
-                // Плавная анимация смены иконок
                 Crossfade(targetState = isFavorite, animationSpec = tween(durationMillis = 200)) { favorite ->
                     Icon(
                         painter = if (favorite) favoriteFilledPainter else favoriteOutlinePainter,
