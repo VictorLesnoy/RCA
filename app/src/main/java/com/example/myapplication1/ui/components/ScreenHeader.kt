@@ -2,13 +2,13 @@ package com.example.myapplication1.ui.components
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,17 +31,13 @@ fun ScreenHeader(
     isFavorite: Boolean = false,
     onFavoriteToggle: (() -> Unit)? = null
 ) {
-    // Кэшируем векторные иконки через rememberVectorPainter — требование задания
-    val favoriteFilledPainter = remember {
-        androidx.compose.ui.graphics.painter.rememberVectorPainter(
-            image = vectorResource(id = R.drawable.ic_favorite_filled)
-        )
-    }
-    val favoriteOutlinePainter = remember {
-        androidx.compose.ui.graphics.painter.rememberVectorPainter(
-            image = vectorResource(id = R.drawable.ic_favorite_outline)
-        )
-    }
+    val favoriteFilledPainter = androidx.compose.ui.graphics.painter.rememberVectorPainter(
+        image = vectorResource(id = R.drawable.ic_favorite_filled)
+    )
+
+    val favoriteOutlinePainter = androidx.compose.ui.graphics.painter.rememberVectorPainter(
+        image = vectorResource(id = R.drawable.ic_favorite_outline)
+    )
 
     Box(
         modifier = Modifier
@@ -52,9 +48,14 @@ fun ScreenHeader(
             model = imageUrl,
             contentDescription = "Header image for $title",
             modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop  // корректный импорт из coil.compose
+            contentScale = ContentScale.Crop
         )
-        Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.5f)))
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.5f))
+        )
 
         Row(
             modifier = Modifier
@@ -73,7 +74,6 @@ fun ScreenHeader(
                 modifier = Modifier.weight(1f)
             )
 
-            // Показываем кнопку только если showFavoriteButton == true
             if (showFavoriteButton && onFavoriteToggle != null) {
                 IconButton(
                     onClick = onFavoriteToggle,

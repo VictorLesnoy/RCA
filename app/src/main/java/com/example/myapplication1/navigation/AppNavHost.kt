@@ -8,6 +8,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -119,12 +121,23 @@ fun AppNavHost(
                 null
             }
 
+            var favoriteIds by rememberSaveable { mutableStateOf(listOf<Int>()) }
+
+            val isFavorite = favoriteIds.contains(recipeId)
+
+            val onFavoriteToggle = {
+                favoriteIds = if (isFavorite) {
+                    favoriteIds.filter { it != recipeId }
+                } else {
+                    favoriteIds + recipeId
+                }
+            }
+
             if (recipeToDisplay != null) {
-                // Состояние убираем отсюда: оно должно быть внутри RecipeDetailsScreen
                 RecipeDetailsScreen(
                     recipe = recipeToDisplay,
-                    isFavorite = false,          // пока заглушка — реальное состояние будет внутри экрана
-                    onFavoriteToggle = { /* будет реализовано внутри экрана */ }
+                    isFavorite = isFavorite,
+                    onFavoriteToggle = onFavoriteToggle
                 )
             } else {
                 Column(
