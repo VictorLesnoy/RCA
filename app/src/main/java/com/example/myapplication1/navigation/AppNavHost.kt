@@ -23,6 +23,7 @@ import kotlinx.coroutines.delay
 
 import com.example.myapplication1.data.repository.RecipesRepositoryStub
 import com.example.myapplication1.screens.CategoriesScreen
+import com.example.myapplication1.screens.RecipesScreen
 import com.example.myapplication1.ui.details.RecipeDetailsScreen
 import com.example.myapplication1.ui.recipes.RecipeUiModel
 import com.example.myapplication1.ui.recipes.toUiModel

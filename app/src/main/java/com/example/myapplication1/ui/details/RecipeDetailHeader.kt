@@ -11,7 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,13 +27,8 @@ fun RecipeDetailHeader(
     isFavorite: Boolean,
     onFavoriteToggle: () -> Unit
 ) {
-    val favoriteFilledPainter = androidx.compose.ui.graphics.painter.rememberVectorPainter(
-        image = vectorResource(id = R.drawable.ic_favorite_filled)
-    )
-
-    val favoriteOutlinePainter = androidx.compose.ui.graphics.painter.rememberVectorPainter(
-        image = vectorResource(id = R.drawable.ic_favorite_outline)
-    )
+    val favoriteFilledPainter = painterResource(id = R.drawable.ic_favorite_filled)
+    val favoriteOutlinePainter = painterResource(id = R.drawable.ic_favorite_outline)
 
     Box(
         modifier = Modifier
