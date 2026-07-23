@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,13 +31,8 @@ fun ScreenHeader(
     isFavorite: Boolean = false,
     onFavoriteToggle: (() -> Unit)? = null
 ) {
-    val favoriteFilledPainter = androidx.compose.ui.graphics.painter.rememberVectorPainter(
-        image = vectorResource(id = R.drawable.ic_favorite_filled)
-    )
-
-    val favoriteOutlinePainter = androidx.compose.ui.graphics.painter.rememberVectorPainter(
-        image = vectorResource(id = R.drawable.ic_favorite_outline)
-    )
+    val favoriteFilledPainter = painterResource(id = R.drawable.ic_favorite_filled)
+    val favoriteOutlinePainter = painterResource(id = R.drawable.ic_favorite_outline)
 
     Box(
         modifier = Modifier

@@ -20,6 +20,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.NavType
 import kotlinx.coroutines.delay
+import androidx.compose.runtime.mutableStateOf
 
 import com.example.myapplication1.data.repository.RecipesRepositoryStub
 import com.example.myapplication1.screens.CategoriesScreen
