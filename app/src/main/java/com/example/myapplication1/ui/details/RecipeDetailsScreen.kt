@@ -2,7 +2,7 @@ package com.example.myapplication1.ui.details
 
 import android.content.Context
 import android.content.Intent
-import androidx.compose.foundation.gestures.rememberScrollState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*

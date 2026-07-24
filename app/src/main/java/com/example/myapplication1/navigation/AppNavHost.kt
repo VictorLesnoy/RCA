@@ -20,7 +20,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.NavType
 import kotlinx.coroutines.delay
-import androidx.compose.runtime.mutableStateOf
 
 import com.example.myapplication1.data.repository.RecipesRepositoryStub
 import com.example.myapplication1.screens.CategoriesScreen
@@ -35,6 +34,7 @@ fun AppNavHost(
     modifier: Modifier = Modifier
 ) {
     val navController = rememberNavController()
+    var favoriteIds by rememberSaveable { mutableStateOf(listOf<Int>()) }
 
     LaunchedEffect(deepLinkIntent) {
         val uri = deepLinkIntent?.data ?: return@LaunchedEffect
@@ -63,7 +63,6 @@ fun AppNavHost(
             if (currentRecipeId == recipeId) return@LaunchedEffect
 
             delay(100)
-
             navController.navigate(Destination.RecipeDetail.createRoute(recipeId))
         }
     }
@@ -122,8 +121,6 @@ fun AppNavHost(
             } catch (e: IllegalArgumentException) {
                 null
             }
-
-            var favoriteIds by rememberSaveable { mutableStateOf(listOf<Int>()) }
 
             val isFavorite = favoriteIds.contains(recipeId)
 
