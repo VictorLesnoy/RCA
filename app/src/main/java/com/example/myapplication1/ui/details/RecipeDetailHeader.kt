@@ -1,4 +1,4 @@
-package com.example.myapplication1.ui.details
+/*package com.example.myapplication1.ui.details
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
@@ -87,4 +87,4 @@ fun RecipeDetailHeader(
             }
         }
     }
-}
+}*/

@@ -34,13 +34,15 @@ fun RecipeDetailsScreen(
     val scrollState = rememberScrollState()
     val context: Context = LocalContext.current
 
-    var servings by rememberSaveable { mutableStateOf(recipe.servings ?: 1) }
+    var servings by rememberSaveable { mutableStateOf(4) }
 
-    val scaledIngredients = remember(recipe.ingredients, servings) {
+    val baseServings = 4
+
+    val scaledIngredients = remember(servings, baseServings, recipe.ingredients) {
         scaleIngredients(
             ingredients = recipe.ingredients,
             servings = servings,
-            baseServings = recipe.servings ?: 1
+            baseServings = baseServings
         )
     }
 
@@ -50,7 +52,6 @@ fun RecipeDetailsScreen(
             .verticalScroll(state = scrollState)
             .padding(bottom = Dimens.Padding.PaddingMain)
     ) {
-        // По заданию: используем ScreenHeader с showFavoriteButton = true
         ScreenHeader(
             title = recipe.title,
             imageUrl = recipe.imageUrl,
@@ -64,7 +65,7 @@ fun RecipeDetailsScreen(
         PortionsSlider(
             value = servings,
             onValueChange = { servings = it },
-            maxServings = recipe.servings?.let { it * 3 } ?: 6,
+            maxServings = baseServings * 3, // например, максимум 12 порций
             modifier = Modifier.padding(horizontal = Dimens.Padding.PaddingMain)
         )
 
