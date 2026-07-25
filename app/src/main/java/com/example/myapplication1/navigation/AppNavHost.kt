@@ -9,14 +9,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberSaveable
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navigation
 import androidx.navigation.navArgument
 import androidx.navigation.NavType
 import kotlinx.coroutines.delay
@@ -27,7 +26,8 @@ import com.example.myapplication1.screens.RecipesScreen
 import com.example.myapplication1.ui.details.RecipeDetailsScreen
 import com.example.myapplication1.ui.recipes.RecipeUiModel
 import com.example.myapplication1.ui.recipes.toUiModel
-import androidx.compose.runtime.mutableStateOf
+
+import androidx.navigation.compose.rememberNavController
 
 @Composable
 fun AppNavHost(
@@ -123,13 +123,14 @@ fun AppNavHost(
                 null
             }
 
-            val isFavorite = favoriteIds.contains(recipeId)
+            // Читаем значение через .value
+            val isFavorite = favoriteIds.value.contains(recipeId)
 
             val onFavoriteToggle = {
                 favoriteIds = if (isFavorite) {
-                    favoriteIds.filter { it != recipeId }
+                    favoriteIds.value.filter { it != recipeId }
                 } else {
-                    favoriteIds + recipeId
+                    favoriteIds.value + recipeId
                 }
             }
 
