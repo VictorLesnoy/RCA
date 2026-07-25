@@ -9,7 +9,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,6 +27,8 @@ import com.example.myapplication1.ui.recipes.RecipeUiModel
 import com.example.myapplication1.ui.recipes.toUiModel
 
 import androidx.navigation.compose.rememberNavController
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 
 @Composable
 fun AppNavHost(
@@ -35,7 +36,9 @@ fun AppNavHost(
     modifier: Modifier = Modifier
 ) {
     val navController = rememberNavController()
-    var favoriteIds by rememberSaveable { mutableStateOf(listOf<Int>()) }
+
+    // ПРАВИЛЬНО: храним состояние как MutableState<List<Int>>
+    val favoriteIds = rememberSaveable { mutableStateOf(listOf<Int>()) }
 
     LaunchedEffect(deepLinkIntent) {
         val uri = deepLinkIntent?.data ?: return@LaunchedEffect
@@ -127,7 +130,7 @@ fun AppNavHost(
             val isFavorite = favoriteIds.value.contains(recipeId)
 
             val onFavoriteToggle = {
-                favoriteIds = if (isFavorite) {
+                favoriteIds.value = if (isFavorite) {
                     favoriteIds.value.filter { it != recipeId }
                 } else {
                     favoriteIds.value + recipeId
