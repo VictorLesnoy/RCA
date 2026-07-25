@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navigation
 import androidx.navigation.navArgument
 import androidx.navigation.NavType
 import kotlinx.coroutines.delay
@@ -27,6 +27,7 @@ import com.example.myapplication1.screens.RecipesScreen
 import com.example.myapplication1.ui.details.RecipeDetailsScreen
 import com.example.myapplication1.ui.recipes.RecipeUiModel
 import com.example.myapplication1.ui.recipes.toUiModel
+import androidx.compose.runtime.mutableStateOf
 
 @Composable
 fun AppNavHost(
@@ -62,7 +63,7 @@ fun AppNavHost(
 
             if (currentRecipeId == recipeId) return@LaunchedEffect
 
-            delay(100)
+            delay(100) // небольшая задержка, чтобы избежать гонки состояний
             navController.navigate(Destination.RecipeDetail.createRoute(recipeId))
         }
     }
