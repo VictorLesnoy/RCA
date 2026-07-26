@@ -2,40 +2,49 @@ package com.example.myapplication1.ui.details
 
 import android.content.Context
 import android.content.Intent
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.background
-import androidx.compose.foundation.rememberScrollState
-import coil.compose.AsyncImage
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+
 import com.example.myapplication1.utils.ShareUtils
 import com.example.myapplication1.ui.recipes.RecipeUiModel
 import com.example.myapplication1.ui.recipes.IngredientItem
 import com.example.myapplication1.ui.theme.Dimens
+import com.example.myapplication1.ui.components.ScreenHeader
+import com.example.myapplication1.ui.recipes.scaleIngredients
 
 private val stepRegex = Regex("^\\d+\\.\\s*")
 
 @Composable
-fun RecipeDetailsScreen(recipe: RecipeUiModel) {
+fun RecipeDetailsScreen(
+    recipe: RecipeUiModel,
+    isFavorite: Boolean,
+    onFavoriteToggle: () -> Unit
+) {
     val scrollState = rememberScrollState()
     val context: Context = LocalContext.current
+
+    var servings by rememberSaveable { mutableStateOf(4) }
+
+    val baseServings = 4
+
+    val scaledIngredients = remember(servings, baseServings, recipe.ingredients) {
+        scaleIngredients(
+            ingredients = recipe.ingredients,
+            servings = servings,
+            baseServings = baseServings
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -45,23 +54,35 @@ fun RecipeDetailsScreen(recipe: RecipeUiModel) {
     ) {
         ScreenHeader(
             title = recipe.title,
-            imageUrl = recipe.imageUrl
+            imageUrl = recipe.imageUrl,
+            showFavoriteButton = true,
+            isFavorite = isFavorite,
+            onFavoriteToggle = onFavoriteToggle
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        PortionsSlider(
+            value = servings,
+            onValueChange = { servings = it },
+            maxServings = baseServings * 3, // например, максимум 12 порций
+            modifier = Modifier.padding(horizontal = Dimens.Padding.PaddingMain)
         )
 
         Text(
-            text = "Ингредиенты (${recipe.ingredients.size})",
+            text = "Ингредиенты (${scaledIngredients.size})",
             modifier = Modifier.padding(top = Dimens.Padding.PaddingLarge, start = Dimens.Padding.PaddingMain),
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp
         )
 
-        recipe.ingredients.forEachIndexed { index, ingredient ->
+        scaledIngredients.forEachIndexed { index, ingredient ->
             IngredientItem(
                 ingredient = ingredient,
                 modifier = Modifier.padding(horizontal = Dimens.Padding.PaddingMain)
             )
 
-            if (index < recipe.ingredients.lastIndex) {
+            if (index < scaledIngredients.lastIndex) {
                 Divider(
                     modifier = Modifier.padding(start = Dimens.Padding.PaddingMain, end = Dimens.Padding.PaddingMain)
                 )
@@ -97,31 +118,5 @@ fun RecipeDetailsScreen(recipe: RecipeUiModel) {
         ) {
             Text("📤 Поделиться рецептом")
         }
-    }
-}
-
-@Composable
-private fun ScreenHeader(title: String, imageUrl: String) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(220.dp)
-    ) {
-        AsyncImage(
-            model = imageUrl,
-            contentDescription = "Header image for $title",
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
-        Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.5f)))
-        Text(
-            text = title,
-            color = Color.White,
-            fontSize = 28.sp,
-            fontWeight = FontWeight.ExtraBold,
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(Dimens.Padding.PaddingMain)
-        )
     }
 }

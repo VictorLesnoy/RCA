@@ -1,44 +1,39 @@
-package com.example.myapplication1.ui.components
+/*package com.example.myapplication1.ui.details
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import androidx.compose.ui.layout.ContentScale
-
-import com.example.myapplication1.R
 import com.example.myapplication1.ui.theme.Dimens
-
-// rememberVectorPainter — нужен для превращения ImageVector в Painter
 import androidx.compose.ui.graphics.painter.rememberVectorPainter
 
 @Composable
-fun ScreenHeader(
+fun RecipeDetailHeader(
     title: String,
     imageUrl: String,
-    showFavoriteButton: Boolean = false,
-    isFavorite: Boolean = false,
-    onFavoriteToggle: (() -> Unit)? = null
+    isFavorite: Boolean,
+    onFavoriteToggle: () -> Unit
 ) {
+    // ТОЛЬКО для ImageVector: берём из Icons
     val favoriteFilledVector = Icons.Filled.Favorite
     val favoriteOutlineVector = Icons.Filled.FavoriteBorder
 
+    // Теперь это корректно: ImageVector -> Painter
     val favoriteFilledPainter = rememberVectorPainter(image = favoriteFilledVector)
     val favoriteOutlinePainter = rememberVectorPainter(image = favoriteOutlineVector)
 
@@ -71,44 +66,25 @@ fun ScreenHeader(
                 text = title,
                 color = Color.White,
                 fontSize = 28.sp,
-                fontWeight = androidx.compose.ui.text.font.FontWeight.ExtraBold,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
+                fontWeight = FontWeight.ExtraBold,
                 modifier = Modifier.weight(1f)
             )
 
-            if (showFavoriteButton && onFavoriteToggle != null) {
-                IconButton(
-                    onClick = onFavoriteToggle,
-                    modifier = Modifier.size(40.dp)
-                ) {
-                    Crossfade(targetState = isFavorite, animationSpec = tween(durationMillis = 200)) { favorite ->
-                        Icon(
-                            painter = if (favorite) favoriteFilledPainter else favoriteOutlinePainter,
-                            contentDescription = if (favorite) "Убрать из избранного" else "Добавить в избранное",
-                            tint = if (favorite) Color.Red else Color.White
-                        )
-                    }
+            val interactionSource = remember { MutableInteractionSource() }
+
+            IconButton(
+                onClick = onFavoriteToggle,
+                interactionSource = interactionSource,
+                modifier = Modifier.size(40.dp)
+            ) {
+                Crossfade(targetState = isFavorite, animationSpec = tween(durationMillis = 200)) { favorite ->
+                    Icon(
+                        painter = if (favorite) favoriteFilledPainter else favoriteOutlinePainter,
+                        contentDescription = if (favorite) "Убрать из избранного" else "Добавить в избранное",
+                        tint = if (favorite) Color.Red else Color.White
+                    )
                 }
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ScreenHeaderPreview() {
-    ScreenHeader(title = "Рецепт дня", imageUrl = "https://via.placeholder.com/400x300")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ScreenHeaderWithFavoritePreview() {
-    ScreenHeader(
-        title = "Борщ",
-        imageUrl = "https://via.placeholder.com/400x300",
-        showFavoriteButton = true,
-        isFavorite = true,
-        onFavoriteToggle = {}
-    )
-}
+}*/
