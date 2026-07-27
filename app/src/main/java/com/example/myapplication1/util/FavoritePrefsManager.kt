@@ -48,10 +48,11 @@ class FavoritePrefsManager(private val context: Context) {
     // --- Внутренние методы для работы с SharedPreferences ---
 
     private fun getFavoritesSet(): Set<String> {
-        return prefs.getStringSet(KEY_FAVORITE_IDS, emptySet()) ?: emptySet()
+        // putStringSet/getStringSet могут возвращать null в редких случаях — страхуемся
+        return prefs.getStringSet(KEY_FAVORITE_IDS, emptySet())?.toSet() ?: emptySet()
     }
 
     private fun saveFavoritesSet(set: Set<String>) {
-        prefs.edit().putStringSet(KEY_FAVORITE_IDS, set).apply()
+        prefs.edit { putStringSet(KEY_FAVORITE_IDS, set) }
     }
 }

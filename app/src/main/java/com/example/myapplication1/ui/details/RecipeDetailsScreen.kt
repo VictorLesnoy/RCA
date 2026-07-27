@@ -1,6 +1,7 @@
 package com.example.myapplication1.ui.details
 
 import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.gestures.rememberScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
@@ -32,19 +33,18 @@ fun RecipeDetailsScreen(
 ) {
     val context: Context = LocalContext.current
 
-    // Инициализируем менеджер (он нужен для чтения/записи)
+    // 1. Менеджер создаём один раз (remember)
     val favoriteManager = remember { FavoritePrefsManager(context) }
 
-    // 1. Определяем начальное состояние:
-    // - Если передано initialIsFavorite (например, из навигации) — используем его.
-    // - Иначе читаем из SharedPreferences.
-    val isFavoriteInit = initialIsFavorite ?: favoriteManager.isFavorite(recipe.id)
+    // 2. Чтение из SharedPreferences тоже делаем один раз — в remember, а не на каждой рекомпозиции
+    val isFavoriteInit = remember(recipe.id) {
+        initialIsFavorite ?: favoriteManager.isFavorite(recipe.id)
+    }
 
-    // 2. Храним состояние в rememberSaveable, чтобы не сбрасывалось при повороте экрана.
+    // 3. Состояние isFavorite храним в rememberSaveable, чтобы пережить поворот экрана
     var isFavorite by rememberSaveable { mutableStateOf(isFavoriteInit) }
 
     val scrollState = rememberScrollState()
-
     var servings by rememberSaveable { mutableStateOf(recipe.servings ?: 1) }
 
     val scaledIngredients = remember(recipe.ingredients, servings) {
@@ -61,14 +61,12 @@ fun RecipeDetailsScreen(
             .verticalScroll(state = scrollState)
             .padding(bottom = Dimens.Padding.PaddingMain)
     ) {
-        // Используем ScreenHeader с showFavoriteButton = true
         ScreenHeader(
             title = recipe.title,
             imageUrl = recipe.imageUrl,
             showFavoriteButton = true,
             isFavorite = isFavorite,
             onFavoriteToggle = {
-                // 3. При клике переключаем состояние и сохраняем в SharedPreferences
                 isFavorite = !isFavorite
                 if (isFavorite) {
                     favoriteManager.addToFavorites(recipe.id)
