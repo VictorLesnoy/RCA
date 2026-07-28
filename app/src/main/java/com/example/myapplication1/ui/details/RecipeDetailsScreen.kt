@@ -2,9 +2,9 @@ package com.example.myapplication1.ui.details
 
 import android.content.Context
 import android.content.Intent
-import androidx.compose.foundation.gestures.rememberScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.gestures.rememberScrollState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -33,15 +33,15 @@ fun RecipeDetailsScreen(
 ) {
     val context: Context = LocalContext.current
 
-    // 1. Менеджер создаём один раз (remember)
+    // Менеджер создаём один раз (remember)
     val favoriteManager = remember { FavoritePrefsManager(context) }
 
-    // 2. Чтение из SharedPreferences тоже делаем один раз — в remember, а не на каждой рекомпозиции
+    // Чтение из SharedPreferences делаем один раз — в remember, а не на каждой рекомпозиции
     val isFavoriteInit = remember(recipe.id) {
         initialIsFavorite ?: favoriteManager.isFavorite(recipe.id)
     }
 
-    // 3. Состояние isFavorite храним в rememberSaveable, чтобы пережить поворот экрана
+    // Состояние isFavorite храним в rememberSaveable, чтобы пережить поворот экрана
     var isFavorite by rememberSaveable { mutableStateOf(isFavoriteInit) }
 
     val scrollState = rememberScrollState()
