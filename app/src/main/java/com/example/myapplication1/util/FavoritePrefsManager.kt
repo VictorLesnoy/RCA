@@ -33,12 +33,14 @@ class FavoritePrefsManager(private val context: Context) {
     fun getAllFavorites(): Set<String> = getFavoritesSet()
 
     private fun getFavoritesSet(): Set<String> {
+        // getStringSet может вернуть null, поэтому обрабатываем безопасно
         return prefs.getStringSet(KEY_FAVORITE_IDS, emptySet())?.toSet() ?: emptySet()
     }
 
     private fun saveFavoritesSet(set: Set<String>) {
-        prefs.edit()
-            .putStringSet(KEY_FAVORITE_IDS, set)
-            .apply()  // или .commit(), если нужна синхронность
+        prefs.edit {
+            putStringSet(KEY_FAVORITE_IDS, set)
+            apply() // асинхронно; если критично сразу — можно заменить на commit()
+        }
     }
 }
