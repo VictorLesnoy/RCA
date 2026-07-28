@@ -39,7 +39,10 @@ fun RecipeDetailsScreen(
     // Инициализируем значение isFavorite: сначала initialIsFavorite (из навигации),
     // если его нет — читаем из SharedPreferences по recipe.id
     val isFavoriteInit = remember(recipe.id) {
-        initialIsFavorite ?: favoriteManager.isFavorite(recipe.id)
+        initialIsFavorite ?: run {
+            val tempManager = FavoritePrefsManager(context)
+            tempManager.isFavorite(recipe.id)
+        }
     }
 
     // Храним состояние в rememberSaveable, чтобы оно сохранилось при повороте экрана
@@ -69,10 +72,11 @@ fun RecipeDetailsScreen(
             isFavorite = isFavorite,
             onFavoriteToggle = {
                 isFavorite = !isFavorite
+                val manager = FavoritePrefsManager(context)
                 if (isFavorite) {
-                    favoriteManager.addToFavorites(recipe.id)
+                    manager.addToFavorites(recipe.id)
                 } else {
-                    favoriteManager.removeFromFavorites(recipe.id)
+                    manager.removeFromFavorites(recipe.id)
                 }
             }
         )

@@ -1,38 +1,30 @@
-package com.example.myapplication1.util
+package com.example.myapplication1.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.example.myapplication1.ui.recipes.RecipeUiModel
 
 class FavoritePrefsManager(private val context: Context) {
 
-    companion object {
-        private const val PREFS_NAME = "favorites_prefs"
-        private const val KEY_FAVORITE_IDS = "favorite_recipe_ids"
-    }
-
     private val prefs: SharedPreferences =
-        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        context.getSharedPreferences("favorites_prefs", Context.MODE_PRIVATE)
 
-    fun isFavorite(recipeId: Int): Boolean {
-        val favorites = getFavoritesSet()
-        return favorites.contains(recipeId.toString())
-    }
+    fun isFavorite(recipeId: Int): Boolean =
+        prefs.getBoolean(recipeId.toString(), false)
 
-    fun addToFavorites(recipeId: Int) {
-        val set = getFavoritesSet().toMutableSet()
-        set.add(recipeId.toString())
-        saveFavoritesSet(set)
+    fun addToFavorites(recipe: RecipeUiModel) {
+        prefs.edit().putBoolean(recipe.id.toString(), true).apply()
     }
 
     fun removeFromFavorites(recipeId: Int) {
-        val set = getFavoritesSet().toMutableSet()
-        set.remove(recipeId.toString())
-        saveFavoritesSet(set)
+        prefs.edit().remove(recipeId.toString()).apply()
     }
 
-    fun getAllFavorites(): Set<String> = getFavoritesSet()
+    fun getAllFavorites(): List<Int> =
+        prefs.all.filter { it.value == true }.mapNotNull { it.key.toIntOrNull() }
+}
 
-    private fun getFavoritesSet(): Set<String> {
+private fun getFavoritesSet(): Set<String> {
         // getStringSet может вернуть null, поэтому обрабатываем безопасно
         return prefs.getStringSet(KEY_FAVORITE_IDS, emptySet())?.toSet() ?: emptySet()
     }
