@@ -6,33 +6,62 @@ import com.example.myapplication1.ui.recipes.RecipeUiModel
 
 class FavoritePrefsManager(private val context: Context) {
 
+    companion object {
+        private const val PREFS_NAME = "favorites_prefs"
+        const val KEY_FAVORITE_IDS = "favorite_recipe_ids"
+    }
+
     private val prefs: SharedPreferences =
-        context.getSharedPreferences("favorites_prefs", Context.MODE_PRIVATE)
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
-    fun isFavorite(recipeId: Int): Boolean =
-        prefs.getBoolean(recipeId.toString(), false)
+    /**
+     * Проверяет, добавлен ли рецепт с recipeId в избранное.
+     */
+    fun isFavorite(recipeId: Int): Boolean {
+        val favoritesSet = getFavoritesSet()
+        return favoritesSet.contains(recipeId.toString())
+    }
 
+    /**
+     * Добавляет рецепт в избранное, сохраняя его ID в Set.
+     */
     fun addToFavorites(recipe: RecipeUiModel) {
-        prefs.edit().putBoolean(recipe.id.toString(), true).apply()
+        val currentSet = getFavoritesSet().toMutableSet()
+        currentSet.add(recipe.id.toString())
+        saveFavoritesSet(currentSet)
     }
 
+    /**
+     * Удаляет рецепт из избранного по ID.
+     */
     fun removeFromFavorites(recipeId: Int) {
-        prefs.edit().remove(recipeId.toString()).apply()
+        val currentSet = getFavoritesSet().toMutableSet()
+        currentSet.remove(recipeId.toString())
+        saveFavoritesSet(currentSet)
     }
 
+    /**
+     * Возвращает список ID всех избранных рецептов.
+     */
     fun getAllFavorites(): List<Int> =
-        prefs.all.filter { it.value == true }.mapNotNull { it.key.toIntOrNull() }
-}
+        getFavoritesSet()
+            .mapNotNull { it.toIntOrNull() }
+            .toList()
 
-private fun getFavoritesSet(): Set<String> {
-        // getStringSet может вернуть null, поэтому обрабатываем безопасно
+    /**
+     * Получает текущий Set ID избранных рецептов (безопасно обрабатывает null).
+     */
+    private fun getFavoritesSet(): Set<String> {
         return prefs.getStringSet(KEY_FAVORITE_IDS, emptySet())?.toSet() ?: emptySet()
     }
 
+    /**
+     * Сохраняет обновлённый Set ID избранных рецептов.
+     */
     private fun saveFavoritesSet(set: Set<String>) {
         prefs.edit {
             putStringSet(KEY_FAVORITE_IDS, set)
-            apply() // асинхронно; если критично сразу — можно заменить на commit()
+            apply()
         }
     }
 }
