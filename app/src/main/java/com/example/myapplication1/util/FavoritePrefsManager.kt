@@ -1,67 +1,47 @@
 package com.example.myapplication1.utils
 
+import android.content.Context
 import android.content.SharedPreferences
-import androidx.preference.PreferenceManager
 
-class FavoritePrefsManager(private val sharedPreferences: SharedPreferences) {
+class FavoritePrefsManager(context: Context) {
+    private val sharedPreferences: SharedPreferences =
+        context.getSharedPreferences("favorites", Context.MODE_PRIVATE)
 
     companion object {
-        private const val KEY_FAVORITES = "favorites_ids"
+        private const val KEY_FAVORITES = "favorite_recipe_ids"
 
-        fun fromContext(context: android.content.Context): FavoritePrefsManager {
-            val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-            return FavoritePrefsManager(prefs)
+        fun fromContext(context: Context): FavoritePrefsManager {
+            return FavoritePrefsManager(context)
         }
     }
 
     // Возвращает true, если ID есть в списке избранного
-    fun isFavorite(recipeId: String): Boolean {
-        val favoritesJson = sharedPreferences.getString(KEY_FAVORITES, "[]") ?: "[]"
-        // Простой парсинг JSON массива строк (для стаба достаточно)
-        return favoritesJson.contains("\"$recipeId\"")
+    fun isFavorite(recipeId: Int): Boolean {
+        val favoritesSet = sharedPreferences.getStringSet(KEY_FAVORITES, emptySet())
+        return favoritesSet?.contains(recipeId.toString()) == true
     }
 
     // Добавляет ID в избранное (без дубликатов)
-    fun addToFavorites(recipeId: String) {
-        val currentJson = sharedPreferences.getString(KEY_FAVORITES, "[]") ?: "[]"
-        val updatedJson = addIdToList(currentJson, recipeId)
-        sharedPreferences.edit().putString(KEY_FAVORITES, updatedJson).apply()
+    fun addToFavorites(recipeId: Int) {
+        val currentSet = sharedPreferences.getStringSet(KEY_FAVORITES, emptySet()).toMutableSet()
+        currentSet.add(recipeId.toString())
+
+        sharedPreferences.edit().putStringSet(KEY_FAVORITES, currentSet).apply()
     }
 
     // Удаляет ID из избранного
-    fun removeFromFavorites(recipeId: String) {
-        val currentJson = sharedPreferences.getString(KEY_FAVORITES, "[]") ?: "[]"
-        val updatedJson = removeIdFromList(currentJson, recipeId)
-        sharedPreferences.edit().putString(KEY_FAVORITES, updatedJson).apply()
+    fun removeFromFavorites(recipeId: Int) {
+        val currentSet = sharedPreferences.getStringSet(KEY_FAVORITES, emptySet()).toMutableSet()
+        currentSet.remove(recipeId.toString())
+
+        sharedPreferences.edit().putStringSet(KEY_FAVORITES, currentSet).apply()
     }
 
     // Получает все ID избранного (если нужно для другого экрана)
-    fun getAllFavorites(): List<String> {
-        val json = sharedPreferences.getString(KEY_FAVORITES, "[]") ?: "[]"
-        return parseIdsFromJson(json)
-    }
-
-    private fun addIdToList(json: String, id: String): String {
-        if (isInList(json, id)) return json
-        // Очень простой способ добавить ID в JSON массив строк
-        // В реальном проекте лучше использовать Gson/Moshi
-        val withoutBrackets = json.substring(1, json.length - 1)
-        val newList = if (withoutBrackets.isBlank()) "\"$id\"" else "$withoutBrackets,\"$id\""
-        return "[$newList]"
-    }
-
-    private fun removeIdFromList(json: String, id: String): String {
-        val withoutBrackets = json.substring(1, json.length - 1)
-        val items = withoutBrackets.split(",").map { it.trim() }
-        val filtered = items.filter { it != "\"$id\"" }
-        return "[${filtered.joinToString(",")}]"
-    }
-
-    private fun isInList(json: String, id: String): Boolean = json.contains("\"$id\"")
-
-    private fun parseIdsFromJson(json: String): List<String> {
-        if (json.isBlank() || json == "[]") return emptyList()
-        val withoutBrackets = json.substring(1, json.length - 1)
-        return withoutBrackets.split(",").map { it.trim().removeSurrounding("\"") }
+    fun getAllFavorites(): List<Int> {
+        val favoritesSet = sharedPreferences.getStringSet(KEY_FAVORITES, emptySet())
+        return favoritesSet
+            ?.mapNotNull { it.toIntOrNull() }
+            .orEmpty()
     }
 }
