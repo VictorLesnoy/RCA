@@ -2,9 +2,9 @@ package com.example.myapplication1.ui.details
 
 import android.content.Context
 import android.content.Intent
+import androidx.compose.foundation.gestures.rememberScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,37 +18,22 @@ import coil.compose.ContentScale
 import com.example.myapplication1.R
 import com.example.myapplication1.ui.components.ScreenHeader
 import com.example.myapplication1.ui.recipes.IngredientItem
-import com.example.myapplication1.ui.recipes.RecipeUiModel
-import com.example.myapplication1.ui.recipes.scaleIngredients
 import com.example.myapplication1.ui.theme.Dimens
-import com.example.myapplication1.util.FavoritePrefsManager
+import com.example.myapplication1.ui.recipes.scaleIngredients
 import com.example.myapplication1.utils.ShareUtils
+import com.example.myapplication1.ui.recipes.RecipeUiModel
 
 private val stepRegex = Regex("^\\d+\\.\\s*")
 
 @Composable
 fun RecipeDetailsScreen(
     recipe: RecipeUiModel,
-    initialIsFavorite: Boolean? = null
+    isFavorite: Boolean,
+    onFavoriteToggle: () -> Unit
 ) {
+    val scrollState = rememberScrollState()
     val context: Context = LocalContext.current
 
-    // Создаём менеджер один раз (remember), чтобы не пересоздавать при каждой рекомпозиции
-    val favoriteManager = remember { FavoritePrefsManager(context) }
-
-    // Инициализируем значение isFavorite: сначала initialIsFavorite (из навигации),
-    // если его нет — читаем из SharedPreferences по recipe.id
-    val isFavoriteInit = remember(recipe.id) {
-        initialIsFavorite ?: run {
-            val tempManager = FavoritePrefsManager(context)
-            tempManager.isFavorite(recipe.id)
-        }
-    }
-
-    // Храним состояние в rememberSaveable, чтобы оно сохранилось при повороте экрана
-    var isFavorite by rememberSaveable { mutableStateOf(isFavoriteInit) }
-
-    val scrollState = rememberScrollState()
     var servings by rememberSaveable { mutableStateOf(recipe.servings ?: 1) }
 
     val scaledIngredients = remember(recipe.ingredients, servings) {
@@ -65,23 +50,23 @@ fun RecipeDetailsScreen(
             .verticalScroll(state = scrollState)
             .padding(bottom = Dimens.Padding.PaddingMain)
     ) {
+        // Используем единый ScreenHeader с rememberVectorPainter (из ui.components)
         ScreenHeader(
             title = recipe.title,
             imageUrl = recipe.imageUrl,
             showFavoriteButton = true,
             isFavorite = isFavorite,
-            onFavoriteToggle = {
-                isFavorite = !isFavorite
-                val manager = FavoritePrefsManager(context)
-                if (isFavorite) {
-                    manager.addToFavorites(recipe.id)
-                } else {
-                    manager.removeFromFavorites(recipe.id)
-                }
-            }
+            onFavoriteToggle = onFavoriteToggle
         )
 
         Spacer(modifier = Modifier.height(16.dp))
+
+        PortionsSlider(
+            value = servings,
+            onValueChange = { servings = it },
+            maxServings = recipe.servings?.let { it * 3 } ?: 6,
+            modifier = Modifier.padding(horizontal = Dimens.Padding.PaddingMain)
+        )
 
         Text(
             text = "Ингредиенты (${scaledIngredients.size})",

@@ -16,30 +16,22 @@ import java.lang.reflect.Modifier
 import java.nio.file.WatchEvent
 
 class MainActivity : ComponentActivity() {
-
-    private val deepLinkIntentState = mutableStateOf<Intent?>(null)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        deepLinkIntentState.value = intent
+        val favoritePrefs = FavoritePrefsManager.fromContext(this)
+        val repository = RecipesRepositoryStub()
 
         setContent {
             MyApplication1Theme {
                 Surface(modifier = Modifier.fillMaxSize()) {
-
-                    // Передаём текущее значение в AppNavHost
-                    AppNavHost(deepLinkIntent = deepLinkIntentState.value,
-                        modifier = Modifier.fillMaxSize())
+                    AppNavHost(
+                        navController = rememberNavController(),
+                        repository = repository,
+                        favoritePrefs = favoritePrefs
+                    )
                 }
             }
         }
-    }
-
-    override fun onNewIntent(newIntent: Intent) {
-        super.onNewIntent(newIntent)
-        setIntent(newIntent)
-
-        deepLinkIntentState.value = newIntent
     }
 }
