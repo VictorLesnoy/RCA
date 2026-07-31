@@ -23,18 +23,26 @@ fun AppNavHost(
         composable(Destination.Categories.route) {
             CategoriesScreen(
                 onCategoryClick = { categoryId ->
-                    // Если в CategoriesScreen есть переход по категориям — используй categoryId
-                    // Например: navController.navigate(Destination.Recipes.route)
-                },
-                onRecipeClick = { recipeId ->
-                    navController.navigate(Destination.RecipeDetails(recipeId).route)
+                    // Переход к экрану рецептов по выбранной категории
+                    navController.navigate(Destination.Recipes.withCategory(categoryId).route)
                 }
             )
         }
 
-        composable(Destination.Recipes.route) {
+        composable(
+            route = Destination.Recipes.route,
+            arguments = listOf(
+                navArgument("categoryId") { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            val categoryId = backStackEntry.arguments?.getInt("categoryId")
+                ?: run {
+                    navController.popBackStack()
+                    return@composable
+                }
+
             RecipesScreen(
-                recipes = repository.getAllRecipes(),
+                categoryId = categoryId,
                 onBackClick = {
                     navController.popBackStack()
                 },
@@ -49,22 +57,28 @@ fun AppNavHost(
             route = Destination.RecipeDetails.route,
             arguments = Destination.RecipeDetails.arguments
         ) { backStackEntry ->
-            // Читаем recipeId сразу как Int — никаких строк и парсинга
+            // Читаем recipeId как Int — безопасно, без парсинга строк
             val recipeId = backStackEntry.arguments?.getInt("recipeId")
                 ?: run {
                     navController.popBackStack()
                     return@composable
                 }
 
-            val recipe = repository.getRecipeById(recipeId)
-            if (recipe == null) {
+            // Получаем рецепт: если getRecipeById может выбросить исключение — оберни в try/catch в репозитории.
+            // Здесь мы ожидаем, что repository.getRecipeById возвращает null, если рецепт не найден.
+            val recipeDto = repository.getRecipeById(recipeId)
+            if (recipeDto == null) {
                 navController.popBackStack()
                 return@composable
             }
 
-            // Ключевой момент: remember(recipe.id) — при изменении recipe.id состояние сбросится,
-            // а при клике на кнопку isFavorite будет пересчитан из Prefs и UI обновится
-            val isFavorite = remember(recipe.id) { favoritePrefs.isFavorite(recipe.id) }
+            // Конвертируем DTO в UI-модель (если ещё не сделано в репозитории)
+            val recipe = recipeDto.toRecipeUiModel()
+
+            // ВАЖНО: isFavorite — это mutableState, чтобы UI реагировал на нажатия
+            var isFavorite by rememberSaveable(key = recipe.id) {
+                mutableStateOf(favoritePrefs.isFavorite(recipe.id))
+            }
 
             RecipeDetailsScreen(
                 recipe = recipe,
@@ -75,12 +89,8 @@ fun AppNavHost(
                     } else {
                         favoritePrefs.addToFavorites(recipe.id)
                     }
-                    // После изменения isFavorite нужно обновить состояние в Compose.
-                    // Самый простой способ — пересоздать remember(recipe.id).
-                    // Но в текущей сигнатуре RecipeDetailsScreen мы не можем вызвать recomposition снаружи.
-                    // Поэтому лучше вынести логику isFavorite внутрь RecipeDetailsScreen или использовать ViewModel.
-                    // Ниже — простой вариант без ViewModel: просто меняем значение в mutableState,
-                    // но тогда remember(recipe.id) не сработает.
+                    // Обновляем состояние — UI перерисуется и иконка изменится
+                    isFavorite = !isFavorite
                 }
             )
         }

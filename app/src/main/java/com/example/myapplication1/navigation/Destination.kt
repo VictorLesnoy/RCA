@@ -11,12 +11,12 @@ sealed class Destination(
     object Categories : Destination("categories")
     object Recipes : Destination("recipes")
 
-    data class RecipeDetails(val recipeId: String) : Destination(
+    data class RecipeDetails(val recipeId: Int) : Destination(
         route = "recipe/{recipeId}",
-        arguments = listOf(navArgument("recipeId") { type = NavType.StringType })
+        arguments = listOf(navArgument("recipeId") { type = NavType.IntType })
     )
 
     companion object {
-        fun recipeDetailsRoute(recipeId: String) = "recipe/$recipeId"
+        fun recipeDetailsRoute(recipeId: Int) = "recipe/$recipeId"
     }
 }
