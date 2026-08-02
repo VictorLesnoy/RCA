@@ -2,6 +2,7 @@ package com.example.myapplication1.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.preference.PreferenceManager
 
 class FavoritePrefsManager(context: Context) {
     private val sharedPreferences: SharedPreferences =
@@ -24,14 +25,14 @@ class FavoritePrefsManager(context: Context) {
         val currentSet = (sharedPreferences.getStringSet(KEY_FAVORITES, null) ?: emptySet()).toMutableSet()
         currentSet.add(recipeId.toString())
 
-        sharedPreferences.edit().putStringSet(KEY_FAVORITES, currentSet).apply()
+        sharedPreferences.edit { putStringSet(KEY_FAVORITES, currentSet) }
     }
 
     fun removeFromFavorites(recipeId: Int) {
         val currentSet = (sharedPreferences.getStringSet(KEY_FAVORITES, null) ?: emptySet()).toMutableSet()
         currentSet.remove(recipeId.toString())
 
-        sharedPreferences.edit().putStringSet(KEY_FAVORITES, currentSet).apply()
+        sharedPreferences.edit { putStringSet(KEY_FAVORITES, currentSet) }
     }
 
     fun getAllFavorites(): List<Int> {

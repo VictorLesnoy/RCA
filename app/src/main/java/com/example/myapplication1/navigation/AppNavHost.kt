@@ -23,8 +23,7 @@ fun AppNavHost(
         composable(Destination.Categories.route) {
             CategoriesScreen(
                 onCategoryClick = { categoryId ->
-                    // Переход к экрану рецептов по выбранной категории
-                    navController.navigate(Destination.Recipes.withCategory(categoryId).route)
+                    navController.navigate(Destination.Recipes.routeWithCategory(categoryId))
                 }
             )
         }
@@ -47,7 +46,7 @@ fun AppNavHost(
                     navController.popBackStack()
                 },
                 onRecipeClick = { recipeId ->
-                    navController.navigate(Destination.RecipeDetails(recipeId).route)
+                    navController.navigate(Destination.RecipeDetails.routeWithId(recipeId))
                 },
                 favoritePrefs = favoritePrefs
             )
@@ -57,25 +56,21 @@ fun AppNavHost(
             route = Destination.RecipeDetails.route,
             arguments = Destination.RecipeDetails.arguments
         ) { backStackEntry ->
-            // Читаем recipeId как Int — безопасно, без парсинга строк
             val recipeId = backStackEntry.arguments?.getInt("recipeId")
                 ?: run {
                     navController.popBackStack()
                     return@composable
                 }
 
-            // Получаем рецепт: если getRecipeById может выбросить исключение — оберни в try/catch в репозитории.
-            // Здесь мы ожидаем, что repository.getRecipeById возвращает null, если рецепт не найден.
             val recipeDto = repository.getRecipeById(recipeId)
+
             if (recipeDto == null) {
                 navController.popBackStack()
                 return@composable
             }
 
-            // Конвертируем DTO в UI-модель (если ещё не сделано в репозитории)
-            val recipe = recipeDto.toRecipeUiModel()
+            val recipe = recipeDto.toUiModel()
 
-            // ВАЖНО: isFavorite — это mutableState, чтобы UI реагировал на нажатия
             var isFavorite by rememberSaveable(key = recipe.id) {
                 mutableStateOf(favoritePrefs.isFavorite(recipe.id))
             }
@@ -89,7 +84,6 @@ fun AppNavHost(
                     } else {
                         favoritePrefs.addToFavorites(recipe.id)
                     }
-                    // Обновляем состояние — UI перерисуется и иконка изменится
                     isFavorite = !isFavorite
                 }
             )
