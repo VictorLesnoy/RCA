@@ -1,44 +1,43 @@
-package com.example.myapplication1.utils
+package com.example.myapplication1.data
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.preference.PreferenceManager
 
-class FavoritePrefsManager(context: Context) {
-    private val sharedPreferences: SharedPreferences =
-        context.getSharedPreferences("favorites", Context.MODE_PRIVATE)
+class FavoritePrefsManager(private val context: Context) {
 
     companion object {
-        private const val KEY_FAVORITES = "favorite_recipe_ids"
+        private const val PREFS_NAME = "favorites_prefs"
+        private const val KEY_FAVORITE_IDS = "favorite_ids"
+    }
 
-        fun fromContext(context: Context): FavoritePrefsManager {
-            return FavoritePrefsManager(context)
-        }
+    private val prefs: SharedPreferences by lazy {
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
     }
 
     fun isFavorite(recipeId: Int): Boolean {
-        val favoritesSet = sharedPreferences.getStringSet(KEY_FAVORITES, null) ?: emptySet()
-        return favoritesSet.contains(recipeId.toString())
+        val favoriteIds = prefs.getStringSet(KEY_FAVORITE_IDS, emptySet()) ?: emptySet()
+        return favoriteIds.contains(recipeId.toString())
     }
 
-    fun addToFavorites(recipeId: Int) {
-        val currentSet = (sharedPreferences.getStringSet(KEY_FAVORITES, null) ?: emptySet()).toMutableSet()
-        currentSet.add(recipeId.toString())
+    fun toggleFavorite(recipeId: Int) {
+        prefs.edit { editor ->
+            val favoriteIds = editor.getStringSet(KEY_FAVORITE_IDS, emptySet())?.toMutableSet() ?: mutableSetOf()
+            val idString = recipeId.toString()
 
-        sharedPreferences.edit { putStringSet(KEY_FAVORITES, currentSet) }
+            if (favoriteIds.contains(idString)) {
+                favoriteIds.remove(idString)
+            } else {
+                favoriteIds.add(idString)
+            }
+
+            editor.putStringSet(KEY_FAVORITE_IDS, favoriteIds)
+        }
     }
+}
 
-    fun removeFromFavorites(recipeId: Int) {
-        val currentSet = (sharedPreferences.getStringSet(KEY_FAVORITES, null) ?: emptySet()).toMutableSet()
-        currentSet.remove(recipeId.toString())
-
-        sharedPreferences.edit { putStringSet(KEY_FAVORITES, currentSet) }
-    }
-
-    fun getAllFavorites(): List<Int> {
-        val favoritesSet = sharedPreferences.getStringSet(KEY_FAVORITES, null) ?: emptySet()
-        return favoritesSet
-            .mapNotNull { it.toIntOrNull() }
-            .toList()
-    }
+// Extension для удобного использования editor.edit { }
+private inline fun SharedPreferences.edit(action: SharedPreferences.Editor.() -> Unit) {
+    val editor = edit()
+    action(editor)
+    editor.apply() // apply() вместо commit() — асинхронно, без блокировки UI
 }

@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.gestures.rememberScrollState
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
@@ -38,7 +37,10 @@ fun RecipeDetailsScreen(
     val scrollState = rememberScrollState()
     val context: Context = LocalContext.current
 
-    var servings by rememberSaveable { mutableStateOf(recipe.servings ?: 1) }
+    // Привязка servings к recipe.id: при смене рецепта состояние сбросится
+    var servings by rememberSaveable(key = recipe.id) {
+        mutableStateOf(recipe.servings ?: 1)
+    }
 
     val scaledIngredients = remember(recipe.ingredients, servings) {
         scaleIngredients(

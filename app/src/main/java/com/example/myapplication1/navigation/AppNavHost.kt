@@ -4,12 +4,13 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.myapplication1.ui.categories.CategoriesScreen
+import androidx.navigation.NavType
+import com.example.myapplication1.screens.CategoriesScreen
 import com.example.myapplication1.ui.recipes.RecipesScreen
 import com.example.myapplication1.ui.details.RecipeDetailsScreen
 import com.example.myapplication1.data.FavoritePrefsManager
-import com.example.myapplication1.ui.recipes.RecipeUiModel
-import com.example.myapplication1.utils.RecipesRepositoryStub
+import com.example.myapplication1.data.repository.RecipesRepositoryStub
+import com.example.myapplication1.navigation.Destination
 
 @Composable
 fun AppNavHost(
@@ -22,13 +23,13 @@ fun AppNavHost(
         composable(Destination.Categories.route) {
             CategoriesScreen(
                 onRecipeClick = { recipe ->
-                    navController.navigate(
-                        Destination.RecipeDetails.routeWithId(recipe.id)
-                    )
+                    navController.navigate(Destination.RecipeDetails.routeWithId(recipe.id))
                 },
                 onCategoryClick = { categoryId ->
                     val route = Destination.Recipes.route
-                    navController.navigate("$route?categoryId=$categoryId")
+                    // Если categoryId null — передаём маршрут без параметра (будет default=null)
+                    val finalRoute = if (categoryId == null) route else "$route?categoryId=$categoryId"
+                    navController.navigate(finalRoute)
                 }
             )
         }
@@ -37,20 +38,19 @@ fun AppNavHost(
             route = Destination.Recipes.route,
             arguments = listOf(
                 navArgument("categoryId") {
-                    type = androidx.navigation.NavType.IntType
+                    type = NavType.IntType
                     nullable = true
                     defaultValue = null
                 }
             )
         ) { backStackEntry ->
             val categoryId = backStackEntry.arguments?.getInt("categoryId")
+            val recipes = repository.getAllRecipesByCategory(categoryId)
 
             RecipesScreen(
-                recipes = repository.getAllRecipes(categoryId),
+                recipes = recipes,
                 onRecipeClick = { recipe ->
-                    navController.navigate(
-                        Destination.RecipeDetails.routeWithId(recipe.id)
-                    )
+                    navController.navigate(Destination.RecipeDetails.routeWithId(recipe.id))
                 },
                 favoritePrefs = favoritePrefs
             )
@@ -59,24 +59,32 @@ fun AppNavHost(
         composable(
             route = Destination.RecipeDetails.route,
             arguments = listOf(
-                navArgument("recipeId") { type = androidx.navigation.NavType.IntType }
+                navArgument("recipeId") { type = NavType.IntType }
             )
         ) { backStackEntry ->
-            val recipeId = backStackEntry.arguments?.getInt("recipeId") ?: 0
+            val recipeId = backStackEntry.arguments?.getInt("recipeId") ?: return@composable
             val recipe = repository.getRecipeById(recipeId)
 
-            // Если рецепт не найден — можно сделать отдельный экран ошибки или просто пустой
-            recipe?.let { r ->
+            if (recipe != null) {
                 RecipeDetailsScreen(
-                    recipe = r,
-                    isFavorite = favoritePrefs.isFavorite(r.id),
+                    recipe = recipe,
+                    isFavorite = favoritePrefs.isFavorite(recipe.id),
                     onFavoriteToggle = {
-                        favoritePrefs.toggleFavorite(r.id)
+                        favoritePrefs.toggleFavorite(recipe.id)
                     }
                 )
-            } ?: run {
-                // Заглушка, если рецепт не найден
-                androidx.compose.foundation.Text("Рецепт не найден")
+            } else {
+                androidx.compose.foundation.layout.Column(
+                    modifier = androidx.compose.ui.Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center
+                ) {
+                    androidx.compose.material3.Text(
+                        text = "Рецепт не найден",
+                        style = androidx.compose.material3.MaterialTheme.typography.titleLarge
+                    )
+                }
             }
         }
     }
