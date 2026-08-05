@@ -25,6 +25,7 @@ import com.example.myapplication1.ui.recipes.RecipeUiModel
 import com.example.myapplication1.ui.theme.Dimens
 import com.example.myapplication1.ui.recipes.scaleIngredients
 import com.example.myapplication1.utils.ShareUtils
+import androidx.compose.foundation.rememberScrollState
 
 private val stepRegex = Regex("^\\d+\\.\\s*")
 
@@ -37,7 +38,7 @@ fun RecipeDetailsScreen(
     val scrollState = rememberScrollState()
     val context: Context = LocalContext.current
 
-    // Привязка servings к recipe.id: при смене рецепта состояние сбросится
+    // Сохраняем порции по ID рецепта — при переходе на другой рецепт значение сбросится
     var servings by rememberSaveable(key = recipe.id) {
         mutableStateOf(recipe.servings ?: 1)
     }

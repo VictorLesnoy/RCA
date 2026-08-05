@@ -1,16 +1,22 @@
 package com.example.myapplication1.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.NavType
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication1.screens.CategoriesScreen
 import com.example.myapplication1.ui.recipes.RecipesScreen
 import com.example.myapplication1.ui.details.RecipeDetailsScreen
 import com.example.myapplication1.data.FavoritePrefsManager
 import com.example.myapplication1.data.repository.RecipesRepositoryStub
 import com.example.myapplication1.navigation.Destination
+import kotlin.coroutines.CoroutineContext
 
 @Composable
 fun AppNavHost(
@@ -23,13 +29,18 @@ fun AppNavHost(
         composable(Destination.Categories.route) {
             CategoriesScreen(
                 onRecipeClick = { recipe ->
-                    navController.navigate(Destination.RecipeDetails.routeWithId(recipe.id))
+                    kotlinx.coroutines.launch {
+                        delay(100)
+                        navController.navigate(Destination.RecipeDetails.routeWithId(recipe.id))
+                    }
                 },
                 onCategoryClick = { categoryId ->
                     val route = Destination.Recipes.route
-                    // Если categoryId null — передаём маршрут без параметра (будет default=null)
                     val finalRoute = if (categoryId == null) route else "$route?categoryId=$categoryId"
-                    navController.navigate(finalRoute)
+                    kotlinx.coroutines.launch {
+                        delay(100)
+                        navController.navigate(finalRoute)
+                    }
                 }
             )
         }
@@ -45,14 +56,16 @@ fun AppNavHost(
             )
         ) { backStackEntry ->
             val categoryId = backStackEntry.arguments?.getInt("categoryId")
-            val recipes = repository.getAllRecipesByCategory(categoryId)
+            val recipes = repository.getRecipesByCategoryId(categoryId)
 
             RecipesScreen(
                 recipes = recipes,
                 onRecipeClick = { recipe ->
-                    navController.navigate(Destination.RecipeDetails.routeWithId(recipe.id))
-                },
-                favoritePrefs = favoritePrefs
+                    kotlinx.coroutines.launch {
+                        delay(100)
+                        navController.navigate(Destination.RecipeDetails.routeWithId(recipe.id))
+                    }
+                }
             )
         }
 
@@ -66,23 +79,26 @@ fun AppNavHost(
             val recipe = repository.getRecipeById(recipeId)
 
             if (recipe != null) {
+                var isFavorite by remember(recipe.id) {
+                    mutableStateOf(favoritePrefs.isFavorite(recipe.id))
+                }
+
                 RecipeDetailsScreen(
                     recipe = recipe,
-                    isFavorite = favoritePrefs.isFavorite(recipe.id),
+                    isFavorite = isFavorite,
                     onFavoriteToggle = {
                         favoritePrefs.toggleFavorite(recipe.id)
+                        isFavorite = favoritePrefs.isFavorite(recipe.id)
                     }
                 )
             } else {
-                androidx.compose.foundation.layout.Column(
-                    modifier = androidx.compose.ui.Modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
-                    verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center
+                Column(
+                    modifier = Modifier.fillMaxSize().padding(16.dp),
+                    verticalArrangement = Arrangement.Center
                 ) {
-                    androidx.compose.material3.Text(
+                    Text(
                         text = "Рецепт не найден",
-                        style = androidx.compose.material3.MaterialTheme.typography.titleLarge
+                        style = MaterialTheme.typography.titleLarge
                     )
                 }
             }
