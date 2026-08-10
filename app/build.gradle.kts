@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "com.example.myapplication1"
-    compileSdk = 36  // Упрощённая форма вместо release(36)
+    compileSdk = 34  // Упрощённая форма вместо release(36)
 
     defaultConfig {
         applicationId = "com.example.myapplication1"
         minSdk = 28
-        targetSdk = 36
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -41,23 +41,32 @@ android {
 }
 
 dependencies {
-    implementation(platform("androidx.compose:compose-bom:2024.02.01")) // BOM для версий Compose
+    // BOM для версий Compose
+    implementation(platform("androidx.compose:compose-bom:2024.02.01"))
     implementation("androidx.compose.foundation:foundation")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.ui:ui")
-    implementation(platform(libs.androidx.compose.bom))
+
+    // Core и lifecycle
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.compose.ui)
+
+    // UI и иконки
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation("androidx.compose.material:material-icons-extended:1.7.0")
+
+    // Навигация и Coil
+    implementation("androidx.navigation:navigation-compose:2.7.6")
+    implementation("io.coil-kt:coil-compose:2.6.0")
+
+    // DataStore
+    implementation("androidx.datastore:datastore-preferences:1.1.2")
+
+    // Тесты
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation(libs.coil.compose)
-    implementation("androidx.navigation:navigation-compose:2.7.6")
-    implementation("androidx.compose.material:material-icons-extended:1.7.0")
-    implementation("androidx.datastore:datastore-preferences:1.1.2")
 }

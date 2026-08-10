@@ -1,6 +1,7 @@
 package com.example.myapplication1.ui.details
 
 import android.content.Context
+import android.content.Intent
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
@@ -22,7 +23,11 @@ import com.example.myapplication1.ui.theme.Dimens
 import com.example.myapplication1.ui.recipes.scaleIngredients
 import com.example.myapplication1.utils.ShareUtils
 import com.example.myapplication1.util.FavoriteDataStoreManager
-import kotlinx.coroutines.LaunchedEffect
+import com.example.myapplication1.data.repository.RecipesRepositoryStub
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rememberCoroutineScope
+import kotlinx.coroutines.withContext
 
 private val stepRegex = Regex("^\\d+\\.\\s*")
 
@@ -34,100 +39,116 @@ fun RecipeDetailsScreen(
     val context: Context = LocalContext.current
     val manager = remember { FavoriteDataStoreManager(context) }
 
-    // Состояние избранного (переживает поворот экрана)
     var isFavorite by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
 
-    // При загрузке или смене recipeId проверяем статус избранного
     LaunchedEffect(recipeId) {
-        isFavorite = manager.isFavorite(recipeId)
+        isFavorite = withContext(Dispatchers.IO) {
+            manager.isFavorite(recipeId)
+        }
     }
 
-    val recipe = RecipesRepositoryStub.getRecipeById(recipeId)
-    var servings by remember { mutableStateOf(recipe.servings ?: 2) }
-    val scaledIngredients = scaleIngredients(recipe.ingredients, servings)
+    var recipe by remember { mutableStateOf<RecipeUiModel?>(null) }
+    var isLoading by remember { mutableStateOf(true) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState())
-    ) {
-        ScreenHeader(
-            title = recipe.title,
-            imageUrl = recipe.imageUrl,
-            showFavoriteButton = true,
-            isFavorite = isFavorite,
-            onFavoriteToggle = {
-                // Логика переключения (синхронно обновляем UI, асинхронно пишем в DataStore)
-                if (isFavorite) {
-                    manager.removeFavorite(recipeId)
-                } else {
-                    manager.addFavorite(recipeId)
+    LaunchedEffect(recipeId) {
+        isLoading = true
+        recipe = RecipesRepositoryStub.getRecipeById(recipeId)
+        isLoading = false
+    }
+
+    recipe?.let { currentRecipe ->
+        var servings by remember { mutableStateOf(currentRecipe.servings ?: 2) }
+        val scaledIngredients = scaleIngredients(currentRecipe.ingredients, servings)
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            ScreenHeader(
+                title = currentRecipe.title,
+                imageUrl = currentRecipe.imageUrl,
+                showFavoriteButton = true,
+                isFavorite = isFavorite,
+                onFavoriteToggle = {
+                    isFavorite = !isFavorite
+                    scope.launch(Dispatchers.IO) {
+                        if (isFavorite) {
+                            manager.addFavorite(currentRecipe.id)
+                        } else {
+                            manager.removeFavorite(currentRecipe.id)
+                        }
+                    }
                 }
-                isFavorite = !isFavorite
-            }
-        )
+            )
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        PortionsSlider(
-            value = servings,
-            onValueChange = { servings = it },
-            maxServings = recipe.servings?.let { it * 3 } ?: 6,
-            modifier = Modifier.padding(horizontal = Dimens.Padding.PaddingMain)
-        )
-
-        Text(
-            text = "Ингредиенты (${scaledIngredients.size})",
-            modifier = Modifier.padding(top = Dimens.Padding.PaddingLarge, start = Dimens.Padding.PaddingMain),
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp
-        )
-
-        scaledIngredients.forEachIndexed { index, ingredient ->
-            IngredientItem(
-                ingredient = ingredient,
+            PortionsSlider(
+                value = servings,
+                onValueChange = { servings = it },
+                maxServings = currentRecipe.servings?.let { it * 3 } ?: 6,
                 modifier = Modifier.padding(horizontal = Dimens.Padding.PaddingMain)
             )
 
-            if (index < scaledIngredients.lastIndex) {
-                Divider(
-                    modifier = Modifier.padding(
-                        start = Dimens.Padding.PaddingMain,
-                        end = Dimens.Padding.PaddingMain
+            Text(
+                text = "Ингредиенты (${scaledIngredients.size})",
+                modifier = Modifier.padding(top = Dimens.Padding.PaddingLarge, start = Dimens.Padding.PaddingMain),
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp
+            )
+
+            scaledIngredients.forEachIndexed { index, ingredient ->
+                IngredientItem(
+                    ingredient = ingredient,
+                    modifier = Modifier.padding(horizontal = Dimens.Padding.PaddingMain)
+                )
+
+                if (index < scaledIngredients.lastIndex) {
+                    Divider(
+                        modifier = Modifier.padding(
+                            start = Dimens.Padding.PaddingMain,
+                            end = Dimens.Padding.PaddingMain
+                        )
                     )
+                }
+            }
+
+            Text(
+                text = "Приготовление (${currentRecipe.method.size} шагов)",
+                modifier = Modifier.padding(top = Dimens.Padding.PaddingLarge, start = Dimens.Padding.PaddingMain),
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp
+            )
+
+            currentRecipe.method.forEachIndexed { index, step ->
+                val cleanStep = step.replace(stepRegex, "")
+                Text(
+                    text = "${index + 1}. $cleanStep",
+                    modifier = Modifier
+                        .padding(start = Dimens.Padding.PaddingMain, top = 8.dp, end = Dimens.Padding.PaddingMain)
                 )
             }
-        }
 
-        Text(
-            text = "Приготовление (${recipe.method.size} шагов)",
-            modifier = Modifier.padding(top = Dimens.Padding.PaddingLarge, start = Dimens.Padding.PaddingMain),
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp
-        )
+            Spacer(modifier = Modifier.height(24.dp))
 
-        recipe.method.forEachIndexed { index, step ->
-            val cleanStep = step.replace(stepRegex, "")
-            Text(
-                text = "${index + 1}. $cleanStep",
+            Button(
+                onClick = {
+                    val shareIntent = ShareUtils.shareRecipe(context = context, recipeId = currentRecipe.id)
+                    context.startActivity(Intent.createChooser(shareIntent, "Поделиться рецептом"))
+                },
                 modifier = Modifier
-                    .padding(start = Dimens.Padding.PaddingMain, top = 8.dp, end = Dimens.Padding.PaddingMain)
-            )
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Button(
-            onClick = {
-                val shareIntent = ShareUtils.shareRecipe(context = context, recipeId = recipe.id)
-                context.startActivity(Intent.createChooser(shareIntent, "Поделиться рецептом"))
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = Dimens.Padding.PaddingMain)
-        ) {
-            Text("📤 Поделиться рецептом")
+                    .fillMaxWidth()
+                    .padding(horizontal = Dimens.Padding.PaddingMain)
+            ) {
+                Text("📤 Поделиться рецептом")
+            }
+        }  // <-- Column закрывается здесь
+    } ?: run {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
         }
     }
 }
