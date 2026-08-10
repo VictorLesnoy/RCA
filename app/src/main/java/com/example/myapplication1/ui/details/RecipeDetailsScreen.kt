@@ -2,7 +2,6 @@ package com.example.myapplication1.ui.details
 
 import android.content.Context
 import android.content.Intent
-import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -53,7 +52,8 @@ fun RecipeDetailsScreen(
 
     LaunchedEffect(recipeId) {
         isLoading = true
-        recipe = RecipesRepositoryStub.getRecipeById(recipeId)
+        val dto = RecipesRepositoryStub.getRecipeById(recipeId)
+        recipe = dto?.toUiModel() // <-- ключевое исправление
         isLoading = false
     }
 
@@ -145,7 +145,7 @@ fun RecipeDetailsScreen(
             ) {
                 Text("📤 Поделиться рецептом")
             }
-        }  // <-- Column закрывается здесь
+        }
     } ?: run {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()

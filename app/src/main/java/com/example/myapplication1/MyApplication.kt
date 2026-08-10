@@ -9,6 +9,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import com.example.myapplication1.util.PreferencesKeys
 
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "recipe_app_prefs")
+
 class MyApplication : Application() {
 
     override fun onCreate() {
@@ -22,8 +24,10 @@ class MyApplication : Application() {
         if (oldSet.isEmpty()) return
 
         CoroutineScope(Dispatchers.IO).launch {
-            context.dataStore.edit { prefs: Preferences ->
-                prefs[PreferencesKeys.FAVORITE_RECIPE_IDS] = oldSet.toSet()
+            context.dataStore.updateData { currentPrefs ->
+                currentPrefs.toMutablePreferences().apply {
+                    this[PreferencesKeys.FAVORITE_RECIPE_IDS] = oldSet.toSet()
+                }
             }
         }
 
