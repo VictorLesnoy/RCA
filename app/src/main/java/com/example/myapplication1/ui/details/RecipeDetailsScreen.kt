@@ -2,26 +2,30 @@ package com.example.myapplication1.ui.details
 
 import android.content.Context
 import android.content.Intent
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-
-import com.example.myapplication1.utils.ShareUtils
-import com.example.myapplication1.ui.recipes.RecipeUiModel
-import com.example.myapplication1.ui.recipes.IngredientItem
-import com.example.myapplication1.ui.theme.Dimens
+import coil.compose.AsyncImage
+import coil.compose.ContentScale
+import com.example.myapplication1.R
 import com.example.myapplication1.ui.components.ScreenHeader
+import com.example.myapplication1.ui.recipes.IngredientItem
+import com.example.myapplication1.ui.recipes.RecipeUiModel
+import com.example.myapplication1.ui.theme.Dimens
 import com.example.myapplication1.ui.recipes.scaleIngredients
+import com.example.myapplication1.utils.ShareUtils
+import androidx.compose.foundation.rememberScrollState
 
 private val stepRegex = Regex("^\\d+\\.\\s*")
 
@@ -34,15 +38,16 @@ fun RecipeDetailsScreen(
     val scrollState = rememberScrollState()
     val context: Context = LocalContext.current
 
-    var servings by rememberSaveable { mutableStateOf(4) }
+    // Сохраняем порции по ID рецепта — при переходе на другой рецепт значение сбросится
+    var servings by rememberSaveable(key = recipe.id) {
+        mutableStateOf(recipe.servings ?: 1)
+    }
 
-    val baseServings = 4
-
-    val scaledIngredients = remember(servings, baseServings, recipe.ingredients) {
+    val scaledIngredients = remember(recipe.ingredients, servings) {
         scaleIngredients(
             ingredients = recipe.ingredients,
             servings = servings,
-            baseServings = baseServings
+            baseServings = recipe.servings ?: 1
         )
     }
 
@@ -65,7 +70,7 @@ fun RecipeDetailsScreen(
         PortionsSlider(
             value = servings,
             onValueChange = { servings = it },
-            maxServings = baseServings * 3, // например, максимум 12 порций
+            maxServings = recipe.servings?.let { it * 3 } ?: 6,
             modifier = Modifier.padding(horizontal = Dimens.Padding.PaddingMain)
         )
 

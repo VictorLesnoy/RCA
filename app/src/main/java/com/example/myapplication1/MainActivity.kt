@@ -6,40 +6,30 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
+import androidx.navigation.compose.rememberNavController
 import com.example.myapplication1.navigation.AppNavHost
-import com.example.myapplication1.ui.theme.MyApplication1Theme
-import java.lang.reflect.Modifier
-import java.nio.file.WatchEvent
+import com.example.myapplication1.utils.FavoritePrefsManager
+import com.example.myapplication1.data.repository.RecipesRepositoryStub
 
 class MainActivity : ComponentActivity() {
-
-    private val deepLinkIntentState = mutableStateOf<Intent?>(null)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        deepLinkIntentState.value = intent
+        val favoritePrefs = FavoritePrefsManager(context = this)
+
+        val repository = RecipesRepositoryStub
 
         setContent {
             MyApplication1Theme {
                 Surface(modifier = Modifier.fillMaxSize()) {
-
-                    // Передаём текущее значение в AppNavHost
-                    AppNavHost(deepLinkIntent = deepLinkIntentState.value,
-                        modifier = Modifier.fillMaxSize())
+                    AppNavHost(
+                        navController = rememberNavController(),
+                        repository = repository,
+                        favoritePrefs = favoritePrefs
+                    )
                 }
             }
         }
-    }
-
-    override fun onNewIntent(newIntent: Intent) {
-        super.onNewIntent(newIntent)
-        setIntent(newIntent)
-
-        deepLinkIntentState.value = newIntent
     }
 }
