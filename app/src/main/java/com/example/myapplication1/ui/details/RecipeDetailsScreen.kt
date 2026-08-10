@@ -1,17 +1,13 @@
 package com.example.myapplication1.ui.details
 
 import android.content.Context
-import android.content.Intent
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -25,44 +21,51 @@ import com.example.myapplication1.ui.recipes.RecipeUiModel
 import com.example.myapplication1.ui.theme.Dimens
 import com.example.myapplication1.ui.recipes.scaleIngredients
 import com.example.myapplication1.utils.ShareUtils
-import androidx.compose.foundation.rememberScrollState
+import com.example.myapplication1.util.FavoriteDataStoreManager
+import kotlinx.coroutines.LaunchedEffect
 
 private val stepRegex = Regex("^\\d+\\.\\s*")
 
 @Composable
 fun RecipeDetailsScreen(
-    recipe: RecipeUiModel,
-    isFavorite: Boolean,
-    onFavoriteToggle: () -> Unit
+    recipeId: Int,
+    onBack: () -> Unit,
 ) {
-    val scrollState = rememberScrollState()
     val context: Context = LocalContext.current
+    val manager = remember { FavoriteDataStoreManager(context) }
 
-    // Сохраняем порции по ID рецепта — при переходе на другой рецепт значение сбросится
-    var servings by rememberSaveable(key = recipe.id) {
-        mutableStateOf(recipe.servings ?: 1)
+    // Состояние избранного (переживает поворот экрана)
+    var isFavorite by remember { mutableStateOf(false) }
+
+    // При загрузке или смене recipeId проверяем статус избранного
+    LaunchedEffect(recipeId) {
+        isFavorite = manager.isFavorite(recipeId)
     }
 
-    val scaledIngredients = remember(recipe.ingredients, servings) {
-        scaleIngredients(
-            ingredients = recipe.ingredients,
-            servings = servings,
-            baseServings = recipe.servings ?: 1
-        )
-    }
+    val recipe = RecipesRepositoryStub.getRecipeById(recipeId)
+    var servings by remember { mutableStateOf(recipe.servings ?: 2) }
+    val scaledIngredients = scaleIngredients(recipe.ingredients, servings)
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(state = scrollState)
-            .padding(bottom = Dimens.Padding.PaddingMain)
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         ScreenHeader(
             title = recipe.title,
             imageUrl = recipe.imageUrl,
             showFavoriteButton = true,
             isFavorite = isFavorite,
-            onFavoriteToggle = onFavoriteToggle
+            onFavoriteToggle = {
+                // Логика переключения (синхронно обновляем UI, асинхронно пишем в DataStore)
+                if (isFavorite) {
+                    manager.removeFavorite(recipeId)
+                } else {
+                    manager.addFavorite(recipeId)
+                }
+                isFavorite = !isFavorite
+            }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -89,7 +92,10 @@ fun RecipeDetailsScreen(
 
             if (index < scaledIngredients.lastIndex) {
                 Divider(
-                    modifier = Modifier.padding(start = Dimens.Padding.PaddingMain, end = Dimens.Padding.PaddingMain)
+                    modifier = Modifier.padding(
+                        start = Dimens.Padding.PaddingMain,
+                        end = Dimens.Padding.PaddingMain
+                    )
                 )
             }
         }
