@@ -3,12 +3,9 @@ package com.example.myapplication1.util
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
-
-//val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "recipe_app_prefs")
 
 class FavoriteDataStoreManager(private val context: Context) {
 

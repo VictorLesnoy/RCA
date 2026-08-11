@@ -9,8 +9,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import com.example.myapplication1.util.PreferencesKeys
 
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "recipe_app_prefs")
-
 class MyApplication : Application() {
 
     override fun onCreate() {
@@ -19,7 +17,8 @@ class MyApplication : Application() {
     }
 
     private fun migrateFromSharedPreferences(context: Context) {
-        val sp = context.getSharedPreferences("FavoriteRecipes", Context.MODE_PRIVATE)
+        val sp = context.getSharedPreferences("favorites_prefs", Context.MODE_PRIVATE)
+
         val oldSet = sp.getStringSet("favorite_recipe_ids", null) ?: return
         if (oldSet.isEmpty()) return
 
