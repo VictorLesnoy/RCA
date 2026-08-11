@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
 
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "recipe_app_prefs")
+//val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "recipe_app_prefs")
 
 class FavoriteDataStoreManager(private val context: Context) {
 
