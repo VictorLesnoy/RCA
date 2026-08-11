@@ -1,7 +1,6 @@
 package com.example.myapplication1.ui.details
 
 import android.content.Context
-import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -36,25 +35,63 @@ fun RecipeDetailsScreen(
     onBack: () -> Unit,
 ) {
     val context: Context = LocalContext.current
-    val manager = remember { FavoriteDataStoreManager(context) }
-
-    var isFavorite by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
-
-    LaunchedEffect(recipeId) {
-        isFavorite = withContext(Dispatchers.IO) {
-            manager.isFavorite(recipeId)
-        }
-    }
+    val manager = remember { FavoriteDataStoreManager(context) }
 
     var recipe by remember { mutableStateOf<RecipeUiModel?>(null) }
     var isLoading by remember { mutableStateOf(true) }
+    var error by remember { mutableStateOf<String?>(null) }
+
+    var isFavorite by remember { mutableStateOf(false) }
 
     LaunchedEffect(recipeId) {
         isLoading = true
-        val dto = RecipesRepositoryStub.getRecipeById(recipeId)
-        recipe = dto?.toUiModel() // <-- ключевое исправление
-        isLoading = false
+        error = null
+
+        try {
+            val dto = withContext(Dispatchers.IO) {
+                RecipesRepositoryStub.getRecipeById(recipeId)
+            }
+
+            if (dto == null) {
+                error = "Рецепт не найден"
+                isLoading = false
+                return@LaunchedEffect
+            }
+
+            recipe = dto.toUiModel()
+
+            isFavorite = manager.isFavorite(recipeId)
+
+            isLoading = false
+        } catch (e: Exception) {
+            error = e.message ?: "Ошибка загрузки рецепта"
+            isLoading = false
+        }
+    }
+
+    if (isLoading) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+        return
+    }
+
+    if (!isLoading && error != null) {
+        Box(modifier = Modifier.fillMaxSize().padding(16.dp), contentAlignment = Alignment.Center) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = "⚠️ ${error}",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.error
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(onClick = onBack) {
+                    Text("Вернуться назад")
+                }
+            }
+        }
+        return
     }
 
     recipe?.let { currentRecipe ->
@@ -73,9 +110,11 @@ fun RecipeDetailsScreen(
                 showFavoriteButton = true,
                 isFavorite = isFavorite,
                 onFavoriteToggle = {
-                    isFavorite = !isFavorite
+                    val newState = !isFavorite
+                    isFavorite = newState
+
                     scope.launch(Dispatchers.IO) {
-                        if (isFavorite) {
+                        if (newState) {
                             manager.addFavorite(currentRecipe.id)
                         } else {
                             manager.removeFavorite(currentRecipe.id)
@@ -137,7 +176,10 @@ fun RecipeDetailsScreen(
             Button(
                 onClick = {
                     val shareIntent = ShareUtils.shareRecipe(context = context, recipeId = currentRecipe.id)
-                    context.startActivity(Intent.createChooser(shareIntent, "Поделиться рецептом"))
+                    try {
+                        context.startActivity(Intent.createChooser(shareIntent, "Поделиться рецептом"))
+                    } catch (e: Exception) {
+                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -145,10 +187,6 @@ fun RecipeDetailsScreen(
             ) {
                 Text("📤 Поделиться рецептом")
             }
-        }
-    } ?: run {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
         }
     }
 }
