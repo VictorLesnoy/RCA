@@ -1,6 +1,7 @@
 package com.example.myapplication1.ui.details
 
 import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -41,7 +42,6 @@ fun RecipeDetailsScreen(
     var recipe by remember { mutableStateOf<RecipeUiModel?>(null) }
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
-
     var isFavorite by remember { mutableStateOf(false) }
 
     LaunchedEffect(recipeId) {
@@ -60,7 +60,6 @@ fun RecipeDetailsScreen(
             }
 
             recipe = dto.toUiModel()
-
             isFavorite = manager.isFavorite(recipeId)
 
             isLoading = false
