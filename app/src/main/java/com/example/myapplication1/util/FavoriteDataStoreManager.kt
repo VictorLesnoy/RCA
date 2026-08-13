@@ -3,9 +3,11 @@ package com.example.myapplication1.util
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.stringSetPreferencesKey
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.Dispatchers
+import com.example.myapplication1.util.PreferencesKeys
 
 class FavoriteDataStoreManager(private val context: Context) {
 
@@ -23,6 +25,7 @@ class FavoriteDataStoreManager(private val context: Context) {
             dataStore.updateData { prefs ->
                 val ids = prefs[PreferencesKeys.FAVORITE_RECIPE_IDS]?.toMutableSet() ?: mutableSetOf()
                 ids.add(recipeId.toString())
+
                 prefs.toMutablePreferences().apply {
                     this[PreferencesKeys.FAVORITE_RECIPE_IDS] = ids
                 }
@@ -33,10 +36,18 @@ class FavoriteDataStoreManager(private val context: Context) {
     suspend fun removeFavorite(recipeId: Int) {
         withContext(Dispatchers.IO) {
             dataStore.updateData { prefs ->
-                val ids = prefs[PreferencesKeys.FAVORITE_RECIPE_IDS]?.toMutableSet() ?: return@updateData prefs
+                val currentIds = prefs[PreferencesKeys.FAVORITE_RECIPE_IDS]
+                if (currentIds == null) return@updateData prefs
+
+                val ids = currentIds.toMutableSet()
                 ids.remove(recipeId.toString())
+
                 prefs.toMutablePreferences().apply {
-                    this[PreferencesKeys.FAVORITE_RECIPE_IDS] = ids
+                    if (ids.isEmpty()) {
+                        remove(PreferencesKeys.FAVORITE_RECIPE_IDS)
+                    } else {
+                        this[PreferencesKeys.FAVORITE_RECIPE_IDS] = ids
+                    }
                 }
             }
         }
