@@ -11,7 +11,6 @@ class MyApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        migrateFromSharedPreferences(this)
     }
 
     private fun migrateFromSharedPreferences(context: Context) {
