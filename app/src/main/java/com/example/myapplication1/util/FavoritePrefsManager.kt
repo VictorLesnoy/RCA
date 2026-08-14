@@ -3,7 +3,7 @@ package com.example.myapplication1.util
 import android.content.Context
 import android.content.SharedPreferences
 
-class FavoritePrefsManager(private val context: Context) {
+/*class FavoritePrefsManager(private val context: Context) {
 
     companion object {
         private const val PREFS_NAME = "favorites_prefs"
@@ -70,4 +70,4 @@ private inline fun SharedPreferences.edit(action: SharedPreferences.Editor.() ->
     val editor = edit()
     action(editor)
     editor.apply() // apply() — асинхронно, не блокирует UI
-}
+}*/
