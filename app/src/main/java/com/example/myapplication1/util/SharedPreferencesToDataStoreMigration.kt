@@ -9,11 +9,9 @@ class SharedPreferencesToDataStoreMigration(
 ) {
     suspend fun migrate(): Preferences {
         val sp = context.getSharedPreferences("favorites_prefs", Context.MODE_PRIVATE)
-        val oldSet = sp.getStringSet("favorite_recipe_ids", null) ?: return Preferences.EMPTY
 
-        if (oldSet.isEmpty()) {
-            return Preferences.EMPTY
-        }
+        val oldSet = sp.getStringSet("favorite_recipe_ids", null) ?: return Preferences.EMPTY
+        if (oldSet.isEmpty()) return Preferences.EMPTY
 
         val newPrefs = Preferences.EMPTY.toMutablePreferences().apply {
             this[PreferencesKeys.FAVORITE_RECIPE_IDS] = oldSet.toSet()
