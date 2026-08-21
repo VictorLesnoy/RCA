@@ -1,6 +1,7 @@
 package com.example.myapplication1.ui.details
 
 import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
@@ -168,7 +169,8 @@ fun RecipeDetailsScreen(
                     val shareIntent = ShareUtils.shareRecipe(context = context, recipeId = currentRecipe.id)
                     try {
                         context.startActivity(Intent.createChooser(shareIntent, "Поделиться рецептом"))
-                    } catch (e: Exception) {}
+                    } catch (e: ActivityNotFoundException) {
+                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
