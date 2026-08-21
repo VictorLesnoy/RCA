@@ -16,7 +16,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val favoritePrefs = FavoritePrefsManager(context = this)
+        //val favoritePrefs = FavoritePrefsManager(context = this)
 
         val repository = RecipesRepositoryStub
 
@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
                     AppNavHost(
                         navController = rememberNavController(),
                         repository = repository,
-                        favoritePrefs = favoritePrefs
+                        //favoritePrefs = favoritePrefs
                     )
                 }
             }
