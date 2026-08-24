@@ -2,10 +2,12 @@ package com.example.myapplication1.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.myapplication1.data.repository.RecipesRepositoryStub
 import com.example.myapplication1.ui.components.BottomNav
 import com.example.myapplication1.ui.details.RecipeDetailsScreen
@@ -19,7 +21,8 @@ fun AppNavHost(
     navController: NavHostController,
     repository: RecipesRepositoryStub,
 ) {
-    var currentRoute by androidx.compose.runtime.remember { mutableStateOf<String?>(null) }
+    val currentEntry = navController.currentBackStackEntryAsState()
+    val currentRoute = currentEntry.value?.destination?.route
 
     Scaffold(
         bottomBar = {
@@ -42,15 +45,18 @@ fun AppNavHost(
             composable(Destination.Recipes.route) {
                 RecipesScreen(repository = repository)
             }
+
             composable(Destination.Favorites.route) {
                 FavoritesScreen(repository = repository)
             }
+
             composable("${Destination.RecipeDetails.route}/{recipeId}") { backStackEntry ->
                 val recipeId = backStackEntry.arguments?.getInt("recipeId") ?: 0
-                RecipeDetailsScreen(recipeId = recipeId, onBack = { navController.popBackStack() })
+                RecipeDetailsScreen(
+                    recipeId = recipeId,
+                    onBack = { navController.popBackStack() }
+                )
             }
         }
-
-        currentRoute = navController.currentBackStackEntry?.destination?.route
     }
 }

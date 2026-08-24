@@ -2,6 +2,7 @@ package com.example.myapplication1.ui.details
 
 import android.content.Context
 import android.content.Intent
+import android.content.ActivityNotFoundException
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
@@ -25,6 +26,7 @@ import com.example.myapplication1.utils.ShareUtils
 import com.example.myapplication1.util.FavoriteDataStoreManager
 import com.example.myapplication1.data.repository.RecipesRepositoryStub
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.regex.Regex
 
