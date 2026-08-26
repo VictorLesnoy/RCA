@@ -13,7 +13,7 @@ import com.example.myapplication1.ui.components.BottomNav
 import com.example.myapplication1.ui.details.RecipeDetailsScreen
 import com.example.myapplication1.ui.recipes.RecipesScreen
 import com.example.myapplication1.ui.favorites.FavoritesScreen
-import com.example.myapplication1.util.Destination
+import com.example.myapplication1.navigation.Destination
 import androidx.compose.material3.Scaffold
 
 @Composable
@@ -30,7 +30,9 @@ fun AppNavHost(
                 currentRoute = currentRoute,
                 onNavigate = { route ->
                     navController.navigate(route) {
-                        popUpTo(navController.graph.startDestinationId) { saveState = true }
+                        popUpTo(navController.graph.startDestinationId) {
+                            saveState = true
+                        }
                         launchSingleTop = true
                     }
                 }
@@ -43,14 +45,22 @@ fun AppNavHost(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Destination.Recipes.route) {
-                RecipesScreen(repository = repository)
+                // Передаем обязательные параметры: categoryId, onBackClick, onRecipeClick
+                RecipesScreen(
+                    repository = repository,
+                    categoryId = null, // или любое значение по умолчанию, если логика требует
+                    onBackClick = { navController.popBackStack() },
+                    onRecipeClick = { recipeId ->
+                        navController.navigate("${Destination.RecipeDetails.route}/$recipeId")
+                    }
+                )
             }
 
             composable(Destination.Favorites.route) {
                 FavoritesScreen(repository = repository)
             }
 
-            composable("${Destination.RecipeDetails.route}/{recipeId}") { backStackEntry ->
+            composable("${Destination.RecipeDetails.route}") { backStackEntry ->
                 val recipeId = backStackEntry.arguments?.getInt("recipeId") ?: 0
                 RecipeDetailsScreen(
                     recipeId = recipeId,

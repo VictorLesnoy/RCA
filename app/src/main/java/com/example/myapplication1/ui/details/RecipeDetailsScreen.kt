@@ -45,7 +45,11 @@ fun RecipeDetailsScreen(
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
 
-    val isFavorite by manager.isFavoriteFlow(recipeId).collectAsState(initial = false)
+    val isFavoriteFlow = remember(recipeId) {
+        manager.isFavoriteFlow(recipeId)
+    }
+
+    val isFavorite by isFavoriteFlow.collectAsState(initial = false)
 
     LaunchedEffect(recipeId) {
         isLoading = true

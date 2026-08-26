@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import com.example.myapplication1.util.FavoriteDataStoreManager
 
 @Composable
@@ -19,7 +20,12 @@ fun FavoriteBadge(
 ) {
     val context = LocalContext.current
     val manager = remember { FavoriteDataStoreManager(context) }
-    val count by manager.getFavoriteCountFlow().collectAsState(initial = 0)
+
+    val favoriteCountFlow = remember(manager) {
+        manager.getFavoriteCountFlow()
+    }
+
+    val count by favoriteCountFlow.collectAsState(initial = 0)
 
     if (count > 0) {
         Badge(

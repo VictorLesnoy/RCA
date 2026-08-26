@@ -9,7 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication1.navigation.AppNavHost
 import com.example.myapplication1.data.repository.RecipesRepositoryStub
-import com.example.myapplication1.ui.components.BottomNav
+import com.example.myapplication1.ui.theme.MyApplication1Theme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,7 +19,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MyApplication1Theme {
-                Surface(modifier = androidx.compose.foundation.layout.Modifier.fillMaxSize()) {
+                Surface(modifier = Modifier.fillMaxSize()) {
                     AppNavHost(
                         navController = rememberNavController(),
                         repository = repository,
