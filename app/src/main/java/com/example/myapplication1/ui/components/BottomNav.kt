@@ -13,9 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.myapplication1.navigation.Destination
 import com.example.myapplication1.ui.components.FavoriteBadge
-import androidx.compose.material3.icons.Icons
-import androidx.compose.material3.icons.filled.Favorite
-import androidx.compose.material3.icons.filled.List
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.List
 
 @Composable
 fun BottomNav(

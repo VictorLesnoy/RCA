@@ -3,7 +3,6 @@ package com.example.myapplication1.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -13,7 +12,7 @@ import com.example.myapplication1.ui.components.BottomNav
 import com.example.myapplication1.ui.details.RecipeDetailsScreen
 import com.example.myapplication1.ui.recipes.RecipesScreen
 import com.example.myapplication1.ui.favorites.FavoritesScreen
-import com.example.myapplication1.navigation.Destination
+import com.example.myapplication1.util.Destination
 import androidx.compose.material3.Scaffold
 
 @Composable
@@ -45,22 +44,20 @@ fun AppNavHost(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Destination.Recipes.route) {
-                // Передаем обязательные параметры: categoryId, onBackClick, onRecipeClick
                 RecipesScreen(
                     repository = repository,
-                    categoryId = null, // или любое значение по умолчанию, если логика требует
-                    onBackClick = { navController.popBackStack() },
                     onRecipeClick = { recipeId ->
                         navController.navigate("${Destination.RecipeDetails.route}/$recipeId")
-                    }
+                    },
+                    onBackClick = null
                 )
             }
 
             composable(Destination.Favorites.route) {
-                FavoritesScreen(repository = repository)
+                FavoritesScreen()
             }
 
-            composable("${Destination.RecipeDetails.route}") { backStackEntry ->
+            composable("${Destination.RecipeDetails.route}/{recipeId}") { backStackEntry ->
                 val recipeId = backStackEntry.arguments?.getInt("recipeId") ?: 0
                 RecipeDetailsScreen(
                     recipeId = recipeId,
