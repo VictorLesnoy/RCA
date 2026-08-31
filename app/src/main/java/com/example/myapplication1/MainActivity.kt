@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication1.navigation.AppNavHost
 import com.example.myapplication1.data.repository.RecipesRepositoryStub

@@ -44,20 +44,14 @@ fun AppNavHost(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Destination.Recipes.route) {
-                RecipesScreen(
-                    repository = repository,
-                    onRecipeClick = { recipeId ->
-                        navController.navigate("${Destination.RecipeDetails.route}/$recipeId")
-                    },
-                    onBackClick = null
-                )
+                RecipesScreen(repository = repository)
             }
 
             composable(Destination.Favorites.route) {
-                FavoritesScreen()
+                FavoritesScreen(repository = repository)
             }
 
-            composable("${Destination.RecipeDetails.route}/{recipeId}") { backStackEntry ->
+             composable("${Destination.RecipeDetails.route}/{recipeId}") { backStackEntry ->
                 val recipeId = backStackEntry.arguments?.getInt("recipeId") ?: 0
                 RecipeDetailsScreen(
                     recipeId = recipeId,
