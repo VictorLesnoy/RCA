@@ -12,7 +12,7 @@ import com.example.myapplication1.ui.components.BottomNav
 import com.example.myapplication1.ui.details.RecipeDetailsScreen
 import com.example.myapplication1.ui.recipes.RecipesScreen
 import com.example.myapplication1.ui.favorites.FavoritesScreen
-import com.example.myapplication1.util.Destination
+import com.example.myapplication1.navigation.Destination
 import androidx.compose.material3.Scaffold
 
 @Composable
@@ -54,7 +54,7 @@ fun AppNavHost(
                 FavoritesScreen(repository = repository)
             }
 
-            composable("${Destination.RecipeDetails.route}/{recipeId}") { backStackEntry ->
+            composable(Destination.RecipeDetails.route) { backStackEntry ->
                 val recipeId = backStackEntry.arguments?.getInt("recipeId") ?: 0
                 RecipeDetailsScreen(
                     recipeId = recipeId,
