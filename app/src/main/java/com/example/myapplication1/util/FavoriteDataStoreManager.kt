@@ -3,51 +3,50 @@ package com.example.myapplication1.util
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.stringSetPreferencesKey
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import com.example.myapplication1.util.PreferencesKeys
 
 class FavoriteDataStoreManager(private val context: Context) {
 
     private val dataStore: DataStore<Preferences> = context.dataStore
 
-    suspend fun isFavorite(recipeId: Int): Boolean {
-        return withContext(Dispatchers.IO) {
-            val ids = dataStore.data.first()[PreferencesKeys.FAVORITE_RECIPE_IDS] ?: emptySet()
+    fun getFavoriteIdsFlow(): Flow<Set<String>> =
+        dataStore.data.map { prefs ->
+            prefs[PreferencesKeys.FAVORITE_RECIPE_IDS] ?: emptySet()
+        }
+
+    fun isFavoriteFlow(recipeId: Int): Flow<Boolean> =
+        getFavoriteIdsFlow().map { ids ->
             ids.contains(recipeId.toString())
         }
-    }
+
+    fun getFavoriteCountFlow(): Flow<Int> =
+        getFavoriteIdsFlow().map { it.size }
 
     suspend fun addFavorite(recipeId: Int) {
-        withContext(Dispatchers.IO) {
-            dataStore.updateData { prefs ->
-                val ids = prefs[PreferencesKeys.FAVORITE_RECIPE_IDS]?.toMutableSet() ?: mutableSetOf()
-                ids.add(recipeId.toString())
-
-                prefs.toMutablePreferences().apply {
-                    this[PreferencesKeys.FAVORITE_RECIPE_IDS] = ids
-                }
+        dataStore.updateData { prefs ->
+            val ids = prefs[PreferencesKeys.FAVORITE_RECIPE_IDS]?.toMutableSet() ?: mutableSetOf()
+            ids.add(recipeId.toString())
+            prefs.toMutablePreferences().apply {
+                this[PreferencesKeys.FAVORITE_RECIPE_IDS] = ids
             }
         }
     }
 
     suspend fun removeFavorite(recipeId: Int) {
-        withContext(Dispatchers.IO) {
-            dataStore.updateData { prefs ->
-                val currentIds = prefs[PreferencesKeys.FAVORITE_RECIPE_IDS]
-                if (currentIds == null) return@updateData prefs
+        dataStore.updateData { prefs ->
+            val currentIds = prefs[PreferencesKeys.FAVORITE_RECIPE_IDS]
+            if (currentIds == null) return@updateData prefs
 
-                val ids = currentIds.toMutableSet()
-                ids.remove(recipeId.toString())
+            val ids = currentIds.toMutableSet()
+            ids.remove(recipeId.toString())
 
-                prefs.toMutablePreferences().apply {
-                    if (ids.isEmpty()) {
-                        remove(PreferencesKeys.FAVORITE_RECIPE_IDS)
-                    } else {
-                        this[PreferencesKeys.FAVORITE_RECIPE_IDS] = ids
-                    }
+            prefs.toMutablePreferences().apply {
+                if (ids.isEmpty()) {
+                    remove(PreferencesKeys.FAVORITE_RECIPE_IDS)
+                } else {
+                    this[PreferencesKeys.FAVORITE_RECIPE_IDS] = ids
                 }
             }
         }
