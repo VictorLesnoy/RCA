@@ -1,9 +1,10 @@
 package com.example.myapplication1.navigation
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -12,7 +13,7 @@ import com.example.myapplication1.ui.components.BottomNav
 import com.example.myapplication1.ui.details.RecipeDetailsScreen
 import com.example.myapplication1.ui.recipes.RecipesScreen
 import com.example.myapplication1.ui.favorites.FavoritesScreen
-import com.example.myapplication1.navigation.Destination
+import com.example.myapplication1.util.Destination
 import androidx.compose.material3.Scaffold
 
 @Composable
@@ -45,16 +46,22 @@ fun AppNavHost(
         ) {
             composable(Destination.Recipes.route) {
                 RecipesScreen(
-                    repository = repository,
                     navController = navController
                 )
             }
 
             composable(Destination.Favorites.route) {
-                FavoritesScreen(repository = repository)
+                FavoritesScreen(
+                    navController = navController
+                )
             }
 
-            composable(Destination.RecipeDetails.route) { backStackEntry ->
+            composable(
+                route = "${Destination.RecipeDetails.route}/{recipeId}",
+                arguments = listOf(
+                    navArgument("recipeId") { type = NavType.IntType }
+                )
+            ) { backStackEntry ->
                 val recipeId = backStackEntry.arguments?.getInt("recipeId") ?: 0
                 RecipeDetailsScreen(
                     recipeId = recipeId,
