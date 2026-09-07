@@ -2,6 +2,7 @@ package com.example.myapplication1.ui.details
 
 import android.content.Context
 import android.content.Intent
+import android.content.ActivityNotFoundException
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
@@ -26,8 +27,8 @@ import com.example.myapplication1.util.FavoriteDataStoreManager
 import com.example.myapplication1.data.repository.RecipesRepositoryStub
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.rememberCoroutineScope
 import kotlinx.coroutines.withContext
+import kotlin.regex.Regex
 
 private val stepRegex = Regex("^\\d+\\.\\s*")
 
@@ -43,7 +44,12 @@ fun RecipeDetailsScreen(
     var recipe by remember { mutableStateOf<RecipeUiModel?>(null) }
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
-    var isFavorite by remember { mutableStateOf(false) }
+
+    val isFavoriteFlow = remember(recipeId) {
+        manager.isFavoriteFlow(recipeId)
+    }
+
+    val isFavorite by isFavoriteFlow.collectAsState(initial = false)
 
     LaunchedEffect(recipeId) {
         isLoading = true
@@ -61,8 +67,6 @@ fun RecipeDetailsScreen(
             }
 
             recipe = dto.toUiModel()
-            isFavorite = manager.isFavorite(recipeId)
-
             isLoading = false
         } catch (e: Exception) {
             error = e.message ?: "Ошибка загрузки рецепта"
@@ -113,27 +117,17 @@ fun RecipeDetailsScreen(
                 showFavoriteButton = true,
                 isFavorite = isFavorite,
                 onFavoriteToggle = {
-                    val newState = !isFavorite
-                    isFavorite = newState
-
-                    scope.launch(Dispatchers.IO) {
-                        if (newState) {
-                            manager.addFavorite(currentRecipe.id)
-                        } else {
+                    scope.launch {
+                        if (isFavorite) {
                             manager.removeFavorite(currentRecipe.id)
+                        } else {
+                            manager.addFavorite(currentRecipe.id)
                         }
                     }
                 }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
-
-            PortionsSlider(
-                value = servings,
-                onValueChange = { servings = it },
-                maxServings = currentRecipe.servings?.let { it * 3 } ?: 6,
-                modifier = Modifier.padding(horizontal = Dimens.Padding.PaddingMain)
-            )
 
             Text(
                 text = "Ингредиенты (${scaledIngredients.size})",
@@ -181,7 +175,7 @@ fun RecipeDetailsScreen(
                     val shareIntent = ShareUtils.shareRecipe(context = context, recipeId = currentRecipe.id)
                     try {
                         context.startActivity(Intent.createChooser(shareIntent, "Поделиться рецептом"))
-                    } catch (e: Exception) {
+                    } catch (e: ActivityNotFoundException) {
                     }
                 },
                 modifier = Modifier
