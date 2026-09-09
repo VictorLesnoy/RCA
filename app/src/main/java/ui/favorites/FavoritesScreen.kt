@@ -9,10 +9,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.myapplication1.data.repository.RecipesRepository
-import com.example.myapplication1.ui.recipes.RecipeCard
+import com.example.myapplication1.ui.recipes.RecipeItem
+import com.example.myapplication1.ui.recipes.RecipeUiModel
 import com.example.myapplication1.ui.theme.Dimens
 import com.example.myapplication1.util.FavoriteDataStoreManager
+import com.example.myapplication1.util.routeWithId
 import kotlinx.coroutines.flow.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.map
 
 @Composable
 fun FavoritesScreen(
@@ -20,25 +23,14 @@ fun FavoritesScreen(
     manager: FavoriteDataStoreManager,
     onNavigate: (String) -> Unit,
 ) {
-    val favoriteIds by manager.getFavoriteIdsFlow().collectAsStateWithLifecycle(initial = emptySet())
-
-    var favorites by remember { mutableStateOf<List<RecipeUiModel>>(emptyList()) }
-    var isLoading by remember { mutableStateOf(true) }
-
-    LaunchedEffect(favoriteIds) {
-        isLoading = true
-        try {
-            val recipes = favoriteIds.mapNotNull { idString ->
+    val favorites by remember(repository, manager) {
+        manager.getFavoriteIdsFlow().map { ids ->
+            ids.mapNotNull { idString ->
                 val id = idString.toIntOrNull() ?: return@mapNotNull null
                 repository.getRecipeById(id)?.toUiModel()
             }
-            favorites = recipes
-        } catch (e: Exception) {
-            favorites = emptyList()
-        } finally {
-            isLoading = false
         }
-    }
+    }.collectAsStateWithLifecycle(initial = emptyList())
 
     Scaffold(
         topBar = {
@@ -55,14 +47,7 @@ fun FavoritesScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            if (isLoading) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
-            } else if (favorites.isEmpty()) {
+            if (favorites.isEmpty()) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -84,16 +69,14 @@ fun FavoritesScreen(
             } else {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(Dimens.Padding.PaddingMain),
-                    contentPadding = PaddingValues(vertical = Dimens.Padding.PaddingMain)
+                    contentAlignment = PaddingValues(vertical = Dimens.Padding.PaddingMain)
                 ) {
                     items(favorites) { recipe ->
-                        RecipeCard(
+                        RecipeItem(
                             recipe = recipe,
                             onCardClick = {
-                                val route = "${com.example.myapplication1.util.Destination.RecipeDetails.route}/${recipe.id}"
-                                onNavigate(route)
+                                onNavigate(routeWithId(recipe.id))
                             },
-                            // isFavorite берём отдельным Flow, но collectAsStateWithLifecycle лучше для Compose
                             isFavorite = manager.isFavoriteFlow(recipe.id)
                                 .collectAsStateWithLifecycle(initial = false)
                                 .value
