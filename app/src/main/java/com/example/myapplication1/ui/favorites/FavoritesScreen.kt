@@ -3,6 +3,7 @@ package com.example.myapplication1.ui.favorites
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -14,7 +15,7 @@ import com.example.myapplication1.ui.recipes.RecipeUiModel
 import com.example.myapplication1.ui.theme.Dimens
 import com.example.myapplication1.util.FavoriteDataStoreManager
 import com.example.myapplication1.util.routeWithId
-import kotlinx.coroutines.flow.collectAsStateWithLifecycle
+import androidx.compose.runtime.collectAsState
 import kotlinx.coroutines.flow.map
 
 @Composable
@@ -30,7 +31,7 @@ fun FavoritesScreen(
                 repository.getRecipeById(id)?.toUiModel()
             }
         }
-    }.collectAsStateWithLifecycle(initial = emptyList())
+    }.collectAsState(initial = emptyList())
 
     Scaffold(
         topBar = {
@@ -54,7 +55,7 @@ fun FavoritesScreen(
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Icon(
-                            imageVector = androidx.compose.material.icons.Icons.Filled.FavoriteBorder,
+                            imageVector = Icons.Filled.FavoriteBorder,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -69,17 +70,17 @@ fun FavoritesScreen(
             } else {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(Dimens.Padding.PaddingMain),
-                    contentAlignment = PaddingValues(vertical = Dimens.Padding.PaddingMain)
+                    contentPadding = PaddingValues(vertical = Dimens.Padding.PaddingMain)
                 ) {
-                    items(favorites) { recipe ->
+                    items(
+                        items = favorites,
+                        key = { it.id }
+                    ) { recipe ->
                         RecipeItem(
                             recipe = recipe,
-                            onCardClick = {
+                            onRecipeClick = {
                                 onNavigate(routeWithId(recipe.id))
-                            },
-                            isFavorite = manager.isFavoriteFlow(recipe.id)
-                                .collectAsStateWithLifecycle(initial = false)
-                                .value
+                            }
                         )
                     }
                 }
