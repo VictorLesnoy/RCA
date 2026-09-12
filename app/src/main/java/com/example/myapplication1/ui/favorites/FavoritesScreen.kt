@@ -15,14 +15,14 @@ import com.example.myapplication1.ui.recipes.RecipeItem
 import com.example.myapplication1.ui.recipes.RecipeUiModel
 import com.example.myapplication1.ui.theme.Dimens
 import com.example.myapplication1.util.FavoriteDataStoreManager
-import com.example.myapplication1.util.routeWithId
+import com.example.myapplication1.navigation.Destination  // путь подставьте свой, где лежит Destination
+import com.example.myapplication1.navigation.routeWithId // или сразу используйте Destination.RecipeDetails.routeWithId(...)
 import androidx.compose.runtime.collectAsState
-import com.example.myapplication1.data.repository.RecipesRepositoryStub
 import kotlinx.coroutines.flow.map
 
 @Composable
 fun FavoritesScreen(
-    repository: RecipesRepositoryStub,
+    repository: RecipesRepository,
     manager: FavoriteDataStoreManager,
     onNavigate: (String) -> Unit,
 ) {
